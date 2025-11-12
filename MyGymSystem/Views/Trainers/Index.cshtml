@@ -1,0 +1,66 @@
+﻿@model IEnumerable<MyGymSystem.Models.Trainer>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Firstname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lastname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phonenumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Specialization)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Imagepath)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Firstname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lastname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phonenumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Specialization)
+            </td>
+                <td>
+                    <img src="@Url.Content("~/Images/"+item.Imagepath)" width="100" height="100" />
+                </td>
+            <td>
+                <a asp-action="EditTrainer" asp-controller="Admins" asp-route-id="@item.Trainerid">Edit</a> |
+                    <a asp-action="DetailTrainer" asp-controller="Admins" asp-route-id="@item.Trainerid">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Trainerid">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

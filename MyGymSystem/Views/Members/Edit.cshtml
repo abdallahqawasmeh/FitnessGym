@@ -1,0 +1,91 @@
+﻿@model MyGymSystem.Join.DetailsMemberWithUserLogin
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+
+<h4>Member</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="member.Memberid" />
+            <div class="form-group">
+                    <label asp-for="member.Firstname" class="control-label"></label>
+                    <input asp-for="member.Firstname" class="form-control" />
+                    <span asp-validation-for="member.Firstname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label asp-for="member.Lastname" class="control-label"></label>
+                    <input asp-for="member.Lastname" class="form-control" />
+                    <span asp-validation-for="member.Lastname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label asp-for="member.Email" class="control-label"></label>
+                    <input asp-for="member.Email" class="form-control" />
+                    <span asp-validation-for="member.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label asp-for="member.Phonenumber" class="control-label"></label>
+                    <input asp-for="member.Phonenumber" class="form-control" />
+                    <span asp-validation-for="member.Phonenumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label asp-for="member.Dateofbirth" class="control-label"></label>
+                    <input asp-for="member.Dateofbirth" type="date" class="form-control" />
+                <span asp-validation-for="member.Dateofbirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label asp-for="member.Fitnessgoal" class="control-label"></label>
+                    <input asp-for="member.Fitnessgoal" class="form-control" />
+                    <span asp-validation-for="member.Fitnessgoal" class="text-danger"></span>
+            </div>
+
+
+                <div>
+                    <label asp-for="userlogin.Username"></label>
+
+
+                    <input type="text" asp-for="userlogin.Username" />
+                </div>
+
+                <div>
+                    <label asp-for="userlogin.Passwordhash"></label>
+
+                    <input type="text" asp-for="userlogin.Passwordhash" />
+                </div>
+
+
+
+
+            <div class="form-group">
+                    <label asp-for="member.ImageFile" class="control-label"></label>
+                    <input asp-for="member.ImageFile" type="file" class="form-control" />
+                    <span asp-validation-for="member.ImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+</body>
+</html>

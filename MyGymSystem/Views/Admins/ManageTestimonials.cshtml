@@ -1,0 +1,38 @@
+﻿@model IEnumerable<MyGymSystem.Models.Testimonial>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Manage Testimonials</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Member</th>
+            <th>Feedback</th>
+            <th>Date Submitted</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var testimonial in Model)
+        {
+            <tr>
+                <td>@testimonial.Member.Firstname @testimonial.Member.Lastname</td>
+                <td>@testimonial.Feedbacktext</td>
+                <td>@testimonial.Submitteddate</td>
+                <td>
+                    <form asp-action="ApproveTestimonial" method="post" style="display:inline;">
+                        <input type="hidden" name="testimonialId" value="@testimonial.Testimonialid" />
+                        <button type="submit" class="btn btn-success">Approve</button>
+                    </form>
+                    <form asp-action="RejectTestimonial" method="post" style="display:inline;">
+                        <input type="hidden" name="testimonialId" value="@testimonial.Testimonialid" />
+                        <button type="submit" class="btn btn-danger">Reject</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

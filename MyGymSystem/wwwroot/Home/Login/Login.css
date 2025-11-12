@@ -1,0 +1,90 @@
+﻿body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0d0d0d; /* Dark background for contrast */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 2em;
+    width: 350px; /* medium width */
+    background-color: #171717;
+    border-radius: 25px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    transition: .4s ease-in-out;
+}
+
+    .form:hover {
+        transform: scale(1.05);
+        border: 1px solid #333;
+    }
+
+#heading {
+    text-align: center;
+    margin: 1em 0;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    border-radius: 25px;
+    padding: 0.6em 1em;
+    background-color: #1f1f1f;
+    box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+}
+
+.input-icon {
+    height: 1.3em;
+    width: 1.3em;
+    fill: white;
+}
+
+.input-field {
+    background: none;
+    border: none;
+    outline: none;
+    width: 100%;
+    color: #d3d3d3;
+    font-size: 1em;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    margin-top: 1.5em;
+}
+
+.button1, .button2, .button3 {
+    padding: 0.6em 1.5em;
+    border-radius: 5px;
+    border: none;
+    background-color: #252525;
+    color: white;
+    font-weight: bold;
+    transition: .3s ease-in-out;
+}
+
+    .button1:hover, .button2:hover {
+        background-color: black;
+        cursor: pointer;
+    }
+
+.button3 {
+    margin-top: 1em;
+    background-color: #333;
+}
+
+    .button3:hover {
+        background-color: #b20000;
+    }

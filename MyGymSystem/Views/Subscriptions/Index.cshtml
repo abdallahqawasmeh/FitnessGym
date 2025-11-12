@@ -1,0 +1,73 @@
+﻿@model IEnumerable<MyGymSystem.Models.Subscription>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Startdate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Enddate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Createdat)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Plan)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Startdate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Enddate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Createdat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Member.Memberid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Payment.Paymentid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Plan.Planid)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Subscriptionid">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Subscriptionid">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Subscriptionid">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

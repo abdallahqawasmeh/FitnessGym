@@ -1,0 +1,98 @@
+﻿
+
+
+@model MyGymSystem.Models.Member
+
+    @{
+    ViewData["Title"] = "Sign Up";
+
+    Layout = null;
+    }
+
+
+
+
+
+
+
+<form  asp-action="SignUp" enctype="multipart/form-data">
+
+
+    <div>
+        
+        <label asp-for="Firstname"></label>
+
+        <input type="text"  asp-for="Firstname" name="FirstName" value="" />
+    <span asp-validation-for="Firstname" class="text-danger"></span>
+    </div>
+    
+    <div>
+
+        <label asp-for="Lastname"></label>
+
+    <input type="text" asp-for="Lastname" name="Lastname" value="" />
+    <span asp-validation-for="Lastname" class="text-danger"></span>
+    </div>
+        <div>
+        <label asp-for="Email"></label>
+
+    <input type="email" asp-for="Email" name="Email" value="" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    <div>
+        <label asp-for="Phonenumber"></label>
+
+    <input type="text" asp-for="Phonenumber" name="Phonenumber" value="" />
+    <span asp-validation-for="Phonenumber" class="text-danger"></span>
+
+        </div>
+    <div>
+        <label asp-for="Dateofbirth"></label>
+
+    <input type="date" asp-for="Dateofbirth" name="Dateofbirth" value="" />
+    <span asp-validation-for="Dateofbirth" class="text-danger"></span>
+        </div>
+
+
+    <div>
+
+        <label asp-for="Fitnessgoal"></label>
+
+    <input type="text" asp-for="Fitnessgoal" name="Fitnessgoal" value="" />
+    <span asp-validation-for="Fitnessgoal" class="text-danger"></span>
+        </div>
+    <div>
+    <label for="Username"></label>
+
+
+        <input type="text" name="Username"  />
+        </div>
+
+    <div>
+        <label for="Password"></label>
+
+        <input type="text"  name="password" />
+    </div>
+
+    <div>
+    <label asp-for="ImageFile"></label>
+
+    <input asp-for="ImageFile" />
+    <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+
+
+
+    <div>
+
+
+        <button type="submit" class="btn btn-primary py-3 w-100 mb-4" value="SignUp">Sign Up</button>
+
+
+    </div>
+
+    </form>
+
+
+<p class="text-center mb-0">Already have an Account? <a asp-action="Login" asp-controller="Authentication">Sign In</a></p>

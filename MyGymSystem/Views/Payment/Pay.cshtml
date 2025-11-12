@@ -1,0 +1,64 @@
+﻿@model MyGymSystem.Models.Payment
+
+@{
+    ViewData["Title"] = "Pay";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Pay for <strong>@ViewBag.Planname</strong> Plan </h1>
+
+<h4>Payment </h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @if (ViewBag.TrainerID != null)
+        {
+            <p><strong>Trainer selected:</strong> 
+                @ViewBag.TrainerName
+            </p>
+        }
+     
+        <form asp-action="Pay" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" name="planId" value="@ViewBag.PlanID" />
+            <input type="hidden" name="trainerId" value="@ViewBag.TrainerID" />
+           
+            <div class="form-group">
+                <label>amount to pay</label>
+                <input type="text" class="form-control" value="@ViewBag.PlanPrice" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Paymentmethod" class="control-label"></label>
+                <input asp-for="Paymentmethod" class="form-control" />
+                <span asp-validation-for="Paymentmethod" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Paymentstatus" class="control-label"></label>
+                <input asp-for="Paymentstatus" class="form-control" />
+                <span asp-validation-for="Paymentstatus" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Externaltransactionid" class="control-label"></label>
+                <input asp-for="Externaltransactionid" class="form-control" />
+                <span asp-validation-for="Externaltransactionid" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Pay Now" class="btn btn-primary btn-lg" />
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div class="m-auto">
+    <a asp-action="plans" asp-controller="Home">Back to Plans</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

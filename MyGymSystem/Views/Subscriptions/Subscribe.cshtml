@@ -1,0 +1,48 @@
+﻿@model MyGymSystem.Models.Membershipplan
+@{
+    var isPersonal = string.Equals(Model.Plantype, "Personal", StringComparison.OrdinalIgnoreCase);
+    var trainers = ViewBag.Trainers as IEnumerable<MyGymSystem.Models.Trainer>;
+}
+
+<h2>Subscribe to @Model.Planname</h2>
+
+<p class="text-muted">@Model.Description</p>
+
+<dl class="row">
+    <dt class="col-sm-3">Type</dt>
+    <dd class="col-sm-9">@Model.Plantype</dd>
+    <dt class="col-sm-3">Duration</dt>
+    <dd class="col-sm-9">@Model.Durationmonths month(s)</dd>
+    <dt class="col-sm-3">Price</dt>
+    <dd class="col-sm-9">@Model.Price.ToString("0.00") JOD</dd>
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@Model.Description</dd>
+
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@Model.Description1</dd>
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@Model.Description2</dd>
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@Model.Description3</dd>
+
+</dl>
+
+<form method="get" asp-action="Pay" asp-controller="Payment">
+    <input type="hidden" name="planId" value="@Model.Planid" />
+
+    @if (isPersonal)
+    {
+        <div class="mb-3">
+            <label class="form-label">Choose a Trainer</label>
+            <select class="form-select" name="trainerId" required>
+                @foreach (var t in trainers ?? Enumerable.Empty<MyGymSystem.Models.Trainer>())
+                {
+                    <option value="@t.Trainerid">@t.Firstname @t.Lastname (@t.Specialization)</option>
+                }
+            </select>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Continue to Payment</button>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary ms-2">Back</a>
+</form>

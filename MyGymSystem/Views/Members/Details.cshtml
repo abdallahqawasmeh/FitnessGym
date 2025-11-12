@@ -1,0 +1,90 @@
+﻿@model MyGymSystem.Join.DetailsMemberWithUserLogin
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+
+<div>
+    <h4>Member</h4>
+    <hr />
+    <dl class="row">
+
+
+            <dt class="col-sm-2">
+                Image
+            </dt>
+            <dd class="col-sm-10">
+                <img src="@Url.Content("~/Images/"+Model.member.Imagepath)" width="100" height="100" />
+            </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.member.Firstname)
+        </dt>
+        <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.member.Firstname)
+        </dd>
+        <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.member.Lastname)
+        </dt>
+        <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.member.Lastname)
+        </dd>
+        <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.member.Email)
+        </dt>
+        <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.member.Email)
+        </dd>
+        <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.member.Phonenumber)
+        </dt>
+        <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.member.Phonenumber)
+        </dd>
+        <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.member.Dateofbirth)
+        </dt>
+        <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.member.Dateofbirth)
+        </dd>
+        <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.member.Fitnessgoal)
+        </dt>
+        <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.member.Fitnessgoal)
+        </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.userlogin.Username)
+            </dt>
+
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.userlogin.Username)
+            </dd>
+
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.userlogin.Passwordhash)
+            </dt>
+
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.userlogin.Passwordhash)
+            </dd>
+
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@ViewData["memid"]">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+</body>
+</html>

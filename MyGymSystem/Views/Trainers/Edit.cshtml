@@ -1,0 +1,73 @@
+﻿@model MyGymSystem.Join.DetailsTrainerWithUserLogin
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Trainer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="trainer.Trainerid" />
+            <div class="form-group">
+                <label asp-for="trainer.Firstname" class="control-label"></label>
+                <input asp-for="trainer.Firstname" class="form-control" />
+                <span asp-validation-for="trainer.Firstname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="trainer.Lastname" class="control-label"></label>
+                <input asp-for="trainer.Lastname" class="form-control" />
+                <span asp-validation-for="trainer.Lastname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="trainer.Email" class="control-label"></label>
+                <input asp-for="trainer.Email" class="form-control" />
+                <span asp-validation-for="trainer.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="trainer.Phonenumber" class="control-label"></label>
+                <input asp-for="trainer.Phonenumber" class="form-control" />
+                <span asp-validation-for="trainer.Phonenumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="trainer.Specialization" class="control-label"></label>
+                <input asp-for="trainer.Specialization" class="form-control" />
+                <span asp-validation-for="trainer.Specialization" class="text-danger"></span>
+            </div>
+
+            <div>
+                <label asp-for="userlogin.Username"></label>
+
+
+                <input type="text" asp-for="userlogin.Username" />
+            </div>
+
+            <div>
+                <label asp-for="userlogin.Passwordhash"></label>
+
+                <input type="text" asp-for="userlogin.Passwordhash" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="trainer.ImageFilet" class="control-label"></label>
+                <input asp-for="trainer.ImageFilet" type="file" class="form-control" />
+                <span asp-validation-for="trainer.ImageFilet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

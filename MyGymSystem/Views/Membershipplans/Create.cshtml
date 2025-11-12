@@ -1,0 +1,83 @@
+﻿@model MyGymSystem.Models.Membershipplan
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Membershipplan</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Planname" class="control-label"></label>
+                <input asp-for="Planname" class="form-control" />
+                <span asp-validation-for="Planname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description1" class="control-label"></label>
+                <input asp-for="Description1" class="form-control" />
+                <span asp-validation-for="Description1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description2" class="control-label"></label>
+                <input asp-for="Description2" class="form-control" />
+                <span asp-validation-for="Description2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description3" class="control-label"></label>
+                <input asp-for="Description3" class="form-control" />
+                <span asp-validation-for="Description3" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description4" class="control-label"></label>
+                <input asp-for="Description4" class="form-control" />
+                <span asp-validation-for="Description4" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Durationmonths" class="control-label"></label>
+                <input asp-for="Durationmonths" class="form-control" />
+                <span asp-validation-for="Durationmonths" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Createdbyadminid" class="control-label"></label>
+                <select asp-for="Createdbyadminid" class ="form-control" asp-items="ViewBag.Createdbyadminid"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Plantype" class="control-label"></label>
+                <input asp-for="Plantype" class="form-control" />
+                <span asp-validation-for="Plantype" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

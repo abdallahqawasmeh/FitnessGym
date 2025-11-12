@@ -1,0 +1,65 @@
+﻿@model IEnumerable<MyGymSystem.Models.Aboutuspage>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Missionstatement)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Visionstatement)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Teamdescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Imagepath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lastupdated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Updatedbyadmin)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Missionstatement)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Visionstatement)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Teamdescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Imagepath)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lastupdated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Updatedbyadmin.Adminid)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Aboutuspageid">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Aboutuspageid">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Aboutuspageid">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

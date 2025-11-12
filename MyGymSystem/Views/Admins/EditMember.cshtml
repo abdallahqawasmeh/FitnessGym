@@ -1,0 +1,75 @@
+﻿@model MyGymSystem.Models.Member
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+
+<h1>Edit</h1>
+
+<h4>Member</h4>
+<hr />
+<div class="row">
+    <div class="col-sm-12 col-xl-6">
+        <div class="bg-secondary rounded h-100 p-4">
+
+            <form asp-action="EditMember" enctype="multipart/form-data">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Memberid" />
+
+                <div class="form-floating mb-3">
+
+                    <input asp-for="Firstname" class="form-control" />
+                    <span asp-validation-for="Firstname" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+
+                    <input asp-for="Lastname" class="form-control" />
+                    <span asp-validation-for="Lastname" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+
+                    <input asp-for="Phonenumber" class="form-control" />
+                    <span asp-validation-for="Phonenumber" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+
+                    <input asp-for="Dateofbirth" class="form-control" />
+                    <span asp-validation-for="Dateofbirth" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+
+                    <input asp-for="Fitnessgoal" class="form-control" />
+                    <span asp-validation-for="Fitnessgoal" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+
+
+
+                    <input asp-for="ImageFile" type="file" class="form-control" />
+                    <span asp-validation-for="ImageFile"  class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="MemberIndex">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

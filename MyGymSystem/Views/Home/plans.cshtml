@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Membershipplan>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="plans-container">
+
+<!-- From Uiverse.io by Yaya12085 -->
+@foreach(var item in Model)
+{
+		<div class="plan">
+
+	<div class="plan">
+		<div class="inner">
+			<span class="pricing">
+				<span>
+					@item.Price <small>/ m</small>
+				</span>
+			</span>
+			<p class="title">@item.Planname</p>
+			<p class="info">@item.Description</p>
+			<ul class="features">
+				<li>
+					<span class="icon">
+						<svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M0 0h24v24H0z" fill="none"></path>
+							<path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path>
+						</svg>
+					</span>
+					<span>@item.Description1</span>
+				</li>
+				<li>
+					<span class="icon">
+						<svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M0 0h24v24H0z" fill="none"></path>
+							<path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path>
+						</svg>
+					</span>
+					<span>@item.Description2</span>
+				</li>
+				<li>
+					<span class="icon">
+						<svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M0 0h24v24H0z" fill="none"></path>
+							<path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path>
+						</svg>
+					</span>
+					<span>@item.Description3</span>
+				</li>
+			</ul>
+			<div class="action">
+				@if (item.Plantype !="Personal")
+				{
+							<a class="button" asp-action="pay" asp-controller="Payment" asp-route-planid="@item.Planid">
+						Choose plan
+					</a>
+				}
+				else
+				{
+							<a class="button" asp-action="Subscribe" asp-controller="Subscriptions" asp-route-planid="@item.Planid">
+						Go Private
+					</a>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+}
+
+</div>
