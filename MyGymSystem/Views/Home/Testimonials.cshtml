@@ -1,3 +1,146 @@
-﻿@{
+﻿@model Testimonial
+
+@{
+    ViewData["Title"] = "Testimonials";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var testimonials = (ViewBag.Testimonials as IEnumerable<Testimonial>)?.ToList() ?? new List<Testimonial>();
+
+    var testimonialsCount = testimonials.Count;
+
 }
+
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="text-center mb-4">
+                    <h2 class="mb-2">Share Your Experience</h2>
+                    <p class="text-muted mb-0">
+                        We’d love to hear your feedback about your journey at our gym.
+                    </p>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form asp-action="SubmitTestimonial" method="post">
+                            @* Hidden member id *@
+                            <input type="hidden" asp-for="Memberid" />
+
+                            @* Validation summary *@
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Feedbacktext" class="form-label">Your Feedback</label>
+                                <textarea asp-for="Feedbacktext"
+                                          class="form-control"
+                                          rows="4"
+                                          placeholder="Tell us what you liked, what helped you, or what we can improve."></textarea>
+                                <span asp-validation-for="Feedbacktext" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block w-100">
+                                Submit Testimonial
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a asp-controller="Home" asp-action="Index" class="text-muted small">
+                        ← Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- ===================== TESTIMONIALS (SLIDER) ===================== -->
+<section class="py-5" id="testimonials">
+    <div class="container" style="max-width: 850px;">
+        <!-- Smaller width -->
+        <div class="row">
+            <div class="col-lg-12 text-center mb-4">
+                <h2 class="fw-bold">What Our Clients Say</h2>
+                <p class="text-muted">Feedback from real members</p>
+            </div>
+        </div>
+
+        <div class="testimonials-slider owl-carousel">
+
+            @if (testimonialsCount > 0)
+            {
+                foreach (var testimonial in testimonials)
+                {
+                    <div class="testimonial-item text-center p-4 position-relative"
+                         style="max-width: 360px; margin: auto;">
+
+                        <!-- IMAGE IN MIDDLE -->
+                        <div class="mb-3 d-flex justify-content-center">
+                            <img src="@Url.Content(
+                                testimonial.Member?.Imagepath != null
+                                    ? $"~/Images/{testimonial.Member.Imagepath}"
+                                    : "~/Images/default.jpg")"
+                                 class="rounded-circle shadow"
+                                 style="width:100px;height:100px;object-fit:cover; margin-top:-10px;">
+                        </div>
+
+                        <!-- FEEDBACK -->
+                        <p class="fst-italic text-muted" style="font-size: 0.95rem;">
+                            "@testimonial.Feedbacktext"
+                        </p>
+
+                        <!-- NAME -->
+                        <h6 class="fw-bold mt-3 mb-0">
+                            @testimonial.Member?.Firstname @testimonial.Member?.Lastname
+                        </h6>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-center">No testimonials available at the moment.</p>
+            }
+
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(function () {
+            var count = @testimonialsCount;
+
+            if (count > 1) {
+                $(".testimonials-slider").owlCarousel({
+                    loop: true,
+                    margin: 25,
+                    center: true,
+                    nav: false,
+                    dots: true,
+                    autoplay: true,
+                    autoplayTimeout: 3500,
+                    responsive: {
+                        0: { items: 1 },
+                        768: { items: 2 },
+                        1200: { items: 3 }
+                    }
+                });
+            } else {
+                $(".testimonials-slider").owlCarousel({
+                    loop: false,
+                    nav: false,
+                    dots: false,
+                    items: 1
+                });
+            }
+        });
+    </script>
+    @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+

@@ -1,5 +1,138 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Aboutuspage>
+@using System.Linq
+
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var about = Model?.FirstOrDefault();
 }
+
+<!-- HERO / INTRO -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <!-- Text -->
+            <div class="col-lg-6">
+                <h1 class="fw-bold mb-3">About Our Fitness Center</h1>
+
+                <p class="lead text-muted mb-4">
+                    We combine a modern gym experience with a smart management system that makes life easier
+                    for members, trainers, and admins.
+                </p>
+
+                <h5 class="fw-semibold mb-1">Our Mission</h5>
+                <p class="mb-3">
+                    @(string.IsNullOrWhiteSpace(about?.Missionstatement)
+                            ? "To help people stay active and healthy through an organized, welcoming, and well-managed fitness environment."
+                            : about.Missionstatement)
+                </p>
+
+                <h5 class="fw-semibold mb-1">Our Vision</h5>
+                <p class="mb-0">
+                    @(string.IsNullOrWhiteSpace(about?.Visionstatement)
+                            ? "To become a trusted fitness destination supported by a smart digital system."
+                            : about.Visionstatement)
+                </p>
+            </div>
+
+            <!-- Image -->
+            <div class="col-lg-6 text-center">
+                <img src="@Url.Content(about?.Imagepath != null ? $"~/Images/{about.Imagepath}" : "~/Home/img/f1.jpg")"
+                     class="img-fluid rounded"
+                     alt="Gym Image" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHAT WE OFFER -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold mb-2">What Our System Helps With</h2>
+            <p class="text-muted mb-0">
+                Simple tools that keep your gym organized and your members happy.
+            </p>
+        </div>
+
+        <div class="row gy-4 text-center">
+            <div class="col-md-6 col-lg-3">
+                <div class="mb-2">
+                    <i class="fa fa-id-card-o fa-2x text-primary" aria-hidden="true"></i>
+                </div>
+                <h5 class="fw-semibold mb-1">Membership Plans</h5>
+                <p class="text-muted small mb-0">
+                    Create and manage different memberships and packages tailored to your members.
+                </p>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="mb-2">
+                    <i class="fa fa-users fa-2x text-success" aria-hidden="true"></i>
+                </div>
+                <h5 class="fw-semibold mb-1">Trainers & Members</h5>
+                <p class="text-muted small mb-0">
+                    Connect trainers with members and keep workouts and progress in one place.
+                </p>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="mb-2">
+                    <i class="fa fa-bar-chart fa-2x text-warning" aria-hidden="true"></i>
+                </div>
+                <h5 class="fw-semibold mb-1">Reports & Stats</h5>
+                <p class="text-muted small mb-0">
+                    View useful statistics about active members, plans, and overall activity.
+                </p>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="mb-2">
+                    <i class="fa fa-credit-card fa-2x text-danger" aria-hidden="true"></i>
+                </div>
+                <h5 class="fw-semibold mb-1">Online Payments & Feedback</h5>
+                <p class="text-muted small mb-0">
+                    Support online payments and collect member testimonials about their experience.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHO USES THE SYSTEM -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold mb-2">Who Uses Our System?</h2>
+            <p class="text-muted mb-0">
+                Clear roles so everyone can focus on what matters.
+            </p>
+        </div>
+
+        <div class="row gy-4 text-center">
+            <div class="col-md-6 col-lg-3">
+                <h5 class="fw-semibold mb-1">Admin</h5>
+                <p class="text-muted small mb-0">
+                    Manages members, trainers, plans, content, and reports.
+                </p>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <h5 class="fw-semibold mb-1">Member</h5>
+                <p class="text-muted small mb-0">
+                    Registers, subscribes to plans, follows workouts, and shares feedback.
+                </p>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <h5 class="fw-semibold mb-1">Trainer</h5>
+                <p class="text-muted small mb-0">
+                    Manages assigned members and designs workout plans.
+                </p>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <h5 class="fw-semibold mb-1">Guest</h5>
+                <p class="text-muted small mb-0">
+                    Can explore plans, trainers, testimonials, and contact information.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

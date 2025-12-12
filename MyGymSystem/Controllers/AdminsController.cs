@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,110 @@ namespace MyGymSystem.Controllers
 
 
 
+        [HttpGet]
+        public IActionResult Report()
+        {
+            ViewData["name"] = HttpContext.Session.GetString("AdminName");
+            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
 
+            var subscriptions = _context.Subscriptions
+                .Include(s => s.Member)
+                .Include(s => s.Plan)
+                .ToList();
+
+            decimal totalPrice = subscriptions.Sum(s => s.Plan?.Price ?? 0);
+            decimal totalProfit = totalPrice * 0.07m;
+
+            ViewBag.TotalPrice = totalPrice;
+
+            // ====== NEW: data for charts ======
+
+            // Revenue by date
+            var revenueByDate = subscriptions
+                .GroupBy(s => s.Startdate.Date)
+                .Select(g => new
+                {
+                    date = g.Key.ToString("yyyy-MM-dd"),
+                    total = g.Sum(x => x.Plan?.Price ?? 0)
+                })
+                .OrderBy(x => x.date)
+                .ToList();
+
+            // Subscriptions count per plan
+            var subsByPlan = subscriptions
+                .GroupBy(s => s.Plan.Planname)
+                .Select(g => new
+                {
+                    plan = g.Key,
+                    count = g.Count()
+                })
+                .OrderByDescending(x => x.count)
+                .ToList();
+
+            ViewBag.RevenueByDate = JsonSerializer.Serialize(revenueByDate);
+            ViewBag.SubsByPlan = JsonSerializer.Serialize(subsByPlan);
+
+            return View(subscriptions);
+        }
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Report(DateTime? startDate, DateTime? endDate)
+        {
+            ViewData["name"] = HttpContext.Session.GetString("AdminName");
+            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+
+            if (startDate == null || endDate == null)
+            {
+                TempData["Error"] = "Please select both start and end dates.";
+                return RedirectToAction(nameof(Report));
+            }
+
+            var subscriptions = _context.Subscriptions
+                .Where(s => s.Startdate >= startDate && s.Startdate <= endDate)
+                .Include(s => s.Member)
+                .Include(s => s.Plan)
+                .ToList();
+
+            decimal totalPrice = subscriptions.Sum(s => s.Plan?.Price ?? 0);
+            decimal totalProfit = totalPrice * 0.07m;
+
+            ViewBag.TotalPrice = totalPrice;
+            ViewBag.TotalProfit = totalProfit;
+
+            ViewBag.StartDate = startDate?.ToShortDateString();
+            ViewBag.EndDate = endDate?.ToShortDateString();
+
+            // ====== NEW: data for charts ======
+
+            var revenueByDate = subscriptions
+                .GroupBy(s => s.Startdate.Date)
+                .Select(g => new
+                {
+                    date = g.Key.ToString("yyyy-MM-dd"),
+                    total = g.Sum(x => x.Plan?.Price ?? 0)
+                })
+                .OrderBy(x => x.date)
+                .ToList();
+
+            var subsByPlan = subscriptions
+                .GroupBy(s => s.Plan.Planname)
+                .Select(g => new
+                {
+                    plan = g.Key,
+                    count = g.Count()
+                })
+                .OrderByDescending(x => x.count)
+                .ToList();
+
+            ViewBag.RevenueByDate = JsonSerializer.Serialize(revenueByDate);
+            ViewBag.SubsByPlan = JsonSerializer.Serialize(subsByPlan);
+
+            return View(subscriptions);
+        }
 
 
 
@@ -43,6 +147,9 @@ namespace MyGymSystem.Controllers
             ViewBag.TotalRevenue = _context.Membershipplans.Sum(x => x.Price);
             ViewBag.subs = _context.Subscriptions.Where(x => x.Status == true).Count();
             ViewBag.tCount = _context.Trainers.Count();
+            ViewBag.TestimonialsCount = _context.Testimonials.Where(t => t.Approvalstatus == "Pending").Count();
+            ViewBag.WorkoutCount = _context.Workoutplans.Count();
+
 
             return View();
         }

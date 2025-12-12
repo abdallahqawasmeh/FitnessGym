@@ -19,12 +19,67 @@ namespace MyGymSystem.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        private void FillLayoutData()
         {
             ViewData["name"] = HttpContext.Session.GetString("MName");
             ViewData["memid"] = HttpContext.Session.GetInt32("MNId");
 
+            var memId = HttpContext.Session.GetInt32("MNId");
+            if (memId != null)
+            {
+                var member = _context.Members.FirstOrDefault(m => m.Memberid == memId);
+                if (member != null)
+                {
+                    ViewData["memImage"] = member.Imagepath;
+                }
+            }
+        }
 
+
+        [HttpGet]
+        public IActionResult SubmitTestimonial()
+		{
+            FillLayoutData();
+
+            return View();
+		}
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult SubmitTestimonial(Testimonial testimonial)
+        {
+            FillLayoutData();
+
+            if (ModelState.IsValid)
+			{
+				var memberId = HttpContext.Session.GetInt32("MNId"); // Assuming the member ID is stored in claims
+
+
+				testimonial.Submitteddate = DateTime.Now;
+				testimonial.Approvalstatus = "Pending"; // Default status is "Pending"
+				testimonial.Memberid = memberId;
+				_context.Testimonials.Add(testimonial);
+				_context.SaveChanges();
+
+				return RedirectToAction("TestimonialSubmitted"); // Or wherever you want to redirect after submission
+			}
+			return View(testimonial);
+		}
+
+
+        [HttpGet]
+        public IActionResult TestimonialSubmitted()
+        {
+
+            return View();
+        }
+
+
+
+        [HttpGet]
+
+		public IActionResult Index()
+        {
+            FillLayoutData();
 
 
             var membershipplans = _context.Membershipplans.ToList();
@@ -36,8 +91,8 @@ namespace MyGymSystem.Controllers
             var final = Tuple.Create<IEnumerable<Membershipplan>, IEnumerable<Trainer>, IEnumerable<Homepage>, IEnumerable<Aboutuspage>, IEnumerable<Contactuspage>>(membershipplans, trainers, home, about, contact);
 
             var approvedTestimonials = _context.Testimonials
-       .Where(t => t.Approvalstatus == "Approved").Include(t => t.Member) // Load member details if needed
-       .ToList();
+             .Where(t => t.Approvalstatus == "Approved").Include(t => t.Member) // Load member details if needed
+             .ToList();
 
             // Pass testimonials to the view
             ViewBag.Testimonials = approvedTestimonials;
@@ -61,31 +116,39 @@ namespace MyGymSystem.Controllers
 
             return View(final);
         }
+		
+        
+        [HttpGet]
 
-        public IActionResult Trainers()
+		public IActionResult Trainers()
         {
 
-            ViewData["name"] = HttpContext.Session.GetString("MName");
-            ViewData["memid"] = HttpContext.Session.GetInt32("MNId");
+            FillLayoutData();
+
+            var trainers = _context.Trainers.ToList();
+			return View(trainers);
+		}
+
+
+		[HttpGet]
+
+		public IActionResult Contact()
+        {
+            FillLayoutData();
 
             return View();
         }
-
-
-
-            public IActionResult Contact()
-        {
-            ViewData["name"] = HttpContext.Session.GetString("MName");
-            ViewData["memid"] = HttpContext.Session.GetInt32("MNId");
-
-            return View();
-        }
+		
+        
+        
+        
         // GET: Aboutuspages
+		[HttpGet]
 
-        public async Task<IActionResult> AboutUs()
+		public async Task<IActionResult> AboutUs()
         {
-            ViewData["name"] = HttpContext.Session.GetString("MName");
-            ViewData["memid"] = HttpContext.Session.GetInt32("MNId");
+            FillLayoutData();
+
             var aa = _context.Aboutuspages
                      .Include(a => a.Updatedbyadmin)
                      .OrderByDescending(a => a.Lastupdated)
@@ -96,11 +159,11 @@ namespace MyGymSystem.Controllers
         }
 
 
+		[HttpGet]
 
-        public IActionResult Plans()
+		public IActionResult Plans()
         {
-            ViewData["name"] = HttpContext.Session.GetString("MName");
-            ViewData["memid"] = HttpContext.Session.GetInt32("MNId");
+            FillLayoutData();
 
 
             var plans = _context.Membershipplans.ToList();
@@ -109,22 +172,33 @@ namespace MyGymSystem.Controllers
             return View(plans);
         }
 
-
+        [HttpGet]
         public IActionResult Testimonials()
         {
-            ViewData["name"] = HttpContext.Session.GetString("MName");
-            ViewData["memid"] = HttpContext.Session.GetInt32("MNId");
+            FillLayoutData();
+                var approvedTestimonials = _context.Testimonials
+             .Where(t => t.Approvalstatus == "Approved").Include(t => t.Member) // Load member details if needed
+             .ToList();
 
-
+            // Pass testimonials to the view
+            ViewBag.Testimonials = approvedTestimonials;
+           
             return View();
 
-        }   // POST: Testimonials/Create
+        } 
+        
+        
+        
+        
+        // POST: Testimonials/Create
             // To protect from overposting attacks, enable the specific properties you want to bind to.
             // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Testimonials([Bind("Testimonialid,Memberid,Feedbacktext,Approvalstatus,Submitteddate,Approvedbyadminid")] Testimonial testimonial)
         {
+            FillLayoutData();
+
             if (ModelState.IsValid)
             {
                 _context.Add(testimonial);

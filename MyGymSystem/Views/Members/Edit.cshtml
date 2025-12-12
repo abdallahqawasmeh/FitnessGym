@@ -1,91 +1,166 @@
-﻿@model MyGymSystem.Join.DetailsMemberWithUserLogin
+﻿@model Member
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Edit</title>
-</head>
-<body>
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4 p-md-5">
 
-<h4>Member</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="member.Memberid" />
-            <div class="form-group">
-                    <label asp-for="member.Firstname" class="control-label"></label>
-                    <input asp-for="member.Firstname" class="form-control" />
-                    <span asp-validation-for="member.Firstname" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                    <label asp-for="member.Lastname" class="control-label"></label>
-                    <input asp-for="member.Lastname" class="form-control" />
-                    <span asp-validation-for="member.Lastname" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                    <label asp-for="member.Email" class="control-label"></label>
-                    <input asp-for="member.Email" class="form-control" />
-                    <span asp-validation-for="member.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                    <label asp-for="member.Phonenumber" class="control-label"></label>
-                    <input asp-for="member.Phonenumber" class="form-control" />
-                    <span asp-validation-for="member.Phonenumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                    <label asp-for="member.Dateofbirth" class="control-label"></label>
-                    <input asp-for="member.Dateofbirth" type="date" class="form-control" />
-                <span asp-validation-for="member.Dateofbirth" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                    <label asp-for="member.Fitnessgoal" class="control-label"></label>
-                    <input asp-for="member.Fitnessgoal" class="form-control" />
-                    <span asp-validation-for="member.Fitnessgoal" class="text-danger"></span>
-            </div>
+                        <!-- 🔹 START FORM (make sure ImageFile is INSIDE this form) -->
+                        <form asp-action="Edit" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
+                            @* Hidden keys *@
+                            <input type="hidden" asp-for="Memberid" />
+                            <input type="hidden" asp-for="Imagepath" />
 
-                <div>
-                    <label asp-for="userlogin.Username"></label>
+                            <!-- TOP: Image + Name + Camera Icon (inside form) -->
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="position-relative me-3">
+                                    <img src="@Url.Content(!string.IsNullOrEmpty(Model.Imagepath)
+                                            ? $"~/Images/{Model.Imagepath}"
+                                            : "~/Images/default.jpg")"
+                                         alt="Profile"
+                                         class="rounded-circle"
+                                         style="width:90px;height:90px;object-fit:cover;" />
 
+                                    <!-- Camera icon triggers hidden ImageFile input -->
+                                    <label for="ImageFile"
+                                           class="btn btn-sm btn-light rounded-circle shadow position-absolute bottom-0 end-0 d-flex align-items-center justify-content-center"
+                                           style="width:32px;height:32px; cursor:pointer;">
+                                        <i class="bi bi-camera-fill"></i>
+                                    </label>
+                                </div>
+                                <div>
+                                    <h4 class="mb-1">@Model.Firstname @Model.Lastname</h4>
+                                    <p class="text-muted mb-0">Member Profile</p>
+                                    <small class="text-muted">Click the camera to change your picture</small>
+                                </div>
+                            </div>
 
-                    <input type="text" asp-for="userlogin.Username" />
+                            <!-- 🔹 HIDDEN file input (this is what gets posted) -->
+                            <input asp-for="ImageFile" type="file" class="d-none" id="ImageFile" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+
+                            <hr />
+
+                            <!-- NAME -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Firstname" class="form-label"></label>
+                                    <input asp-for="Firstname" class="form-control" />
+                                    <span asp-validation-for="Firstname" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Lastname" class="form-label"></label>
+                                    <input asp-for="Lastname" class="form-control" />
+                                    <span asp-validation-for="Lastname" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- EMAIL & PHONE -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Email" class="form-label"></label>
+                                    <input asp-for="Email" class="form-control" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Phonenumber" class="form-label"></label>
+                                    <input asp-for="Phonenumber" class="form-control" />
+                                    <span asp-validation-for="Phonenumber" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- DOB & GOAL -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Dateofbirth" class="form-label"></label>
+                                    <input asp-for="Dateofbirth" type="date" class="form-control" />
+                                    <span asp-validation-for="Dateofbirth" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Fitnessgoal" class="form-label"></label>
+                                    <input asp-for="Fitnessgoal" class="form-control" />
+                                    <span asp-validation-for="Fitnessgoal" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- ACCOUNT -->
+                            <h5 class="mb-3">Account</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="Username" class="form-label">Username</label>
+                                    <input name="Username"
+                                           id="Username"
+                                           class="form-control"
+                                           value="@ViewBag.Username" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="Password" class="form-label">Password</label>
+                                    <input name="Password"
+                                           id="Password"
+                                           class="form-control"
+                                           type="password"
+                                           value="@ViewBag.Password" />
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- BUTTONS -->
+                            <div class="d-flex justify-content-between align-items-center mt-4">
+                                <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+
+                        </form> <!-- 🔹 END FORM -->
+
+                    </div>
                 </div>
 
-                <div>
-                    <label asp-for="userlogin.Passwordhash"></label>
-
-                    <input type="text" asp-for="userlogin.Passwordhash" />
-                </div>
-
-
-
-
-            <div class="form-group">
-                    <label asp-for="member.ImageFile" class="control-label"></label>
-                    <input asp-for="member.ImageFile" type="file" class="form-control" />
-                    <span asp-validation-for="member.ImageFile" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<!-- Member's Invoices -->
+<h3>My Invoices</h3>
+<table class="invoice-table">
+    <thead>
+        <tr>
+            <th>Invoice ID</th>
+            <th>Invoice Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var invoice in Model.Invoices)
+        {
+            <tr>
+                <td>@invoice.Invoiceid</td>
+                <td>@invoice.Invoicedate.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a href="@Url.Action("DownloadInvoice", "Payment", new { invoiceId = invoice.Invoiceid })" class="btn btn-primary btn-sm">Download Invoice</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+        </div>
+    </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-</body>
-</html>

@@ -9,15 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using MyGymSystem.Context;
 using MyGymSystem.Models;
-using iText.Kernel.Pdf;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using MailKit.Security;
-using MimeKit;
+
 using MailKit.Net.Smtp;
-using iText.Kernel.Colors;
 using iText.Layout;
-using NuGet.DependencyResolver;
 
 namespace MyGymSystem.Controllers
 {
@@ -181,7 +175,7 @@ namespace MyGymSystem.Controllers
                 }
 
                 // Generate and save invoice
-                var invoicePath = await GenerateInvoiceAsync(member, payment, plan,trainer);
+                var invoicePath =  GenerateInvoiceAsync(member, payment, plan,trainer);
 
 				var invoice = new Invoice
 				{
@@ -201,11 +195,19 @@ namespace MyGymSystem.Controllers
 
                     if (!string.IsNullOrWhiteSpace(member.Email))
                         await SendInvoiceEmailAsync(member, invoicePath);
-                }
-                catch { /* log if needed; do not throw */ }
-             
 
-				TempData["SuccessMessage"] = "Payment processed successfully!";
+                    if(invoice.Invoiceid != 0)
+                    await DownloadInvoice(invoice.Invoiceid);
+
+                }
+                catch {
+
+                    return BadRequest("email invoice didnt work");
+
+                }
+
+
+                TempData["SuccessMessage"] = "Payment processed successfully!";
 				return RedirectToAction("Index", "Home");
 			}
 			catch (Exception ex)
@@ -219,7 +221,7 @@ namespace MyGymSystem.Controllers
 			}
 		}
 
-		private async Task<string> GenerateInvoiceAsync(Member member, Payment payment, Membershipplan plan,Trainer ? trainer)
+		private  string GenerateInvoiceAsync(Member member, Payment payment, Membershipplan plan,Trainer ? trainer)
 		{
 			var wwwRootPath = _hostEnvironment.WebRootPath;
 			var invoiceFolder = Path.Combine(wwwRootPath, "Invoices");
@@ -320,7 +322,7 @@ namespace MyGymSystem.Controllers
                 </ul>
                 <p>If you have any questions, please don't hesitate to contact us.</p>
                 <br>
-                <p>Best regards,<br>Fitness Gym Team</p>",
+                <p>Best regards,<br>Fitness Gym Team</p>",  
                 TextBody = "Thank you for your payment. Your invoice is attached to this email."
             };
 
@@ -330,7 +332,7 @@ namespace MyGymSystem.Controllers
             using var client = new SmtpClient();
             await client.ConnectAsync(
                 emailSettings["SmtpServer"],
-                int.Parse(emailSettings["SmtpPort"]),
+                int.Parse(emailSettings["SmtpPort"]!),
                 SecureSocketOptions.StartTls);
             await client.AuthenticateAsync(
                 emailSettings["SmtpUsername"],
@@ -392,24 +394,23 @@ namespace MyGymSystem.Controllers
         //    await client.DisconnectAsync(true);
         //}
 
+
         [HttpGet]
-		public async Task<IActionResult> DownloadInvoice(int invoiceId)
-		{
-			var invoice = await _context.Invoices
-				.FirstOrDefaultAsync(i => i.Invoiceid == invoiceId);
+        public async Task<IActionResult> DownloadInvoice(long invoiceId)
+        {
+            var invoice = await _context.Invoices
+                .FirstOrDefaultAsync(i => i.Invoiceid == invoiceId);
 
-			if (invoice == null)
-				return NotFound();
+            if (invoice == null)
+                return NotFound();
 
-			var filepath = Path.Combine(_hostEnvironment.WebRootPath, invoice.Filepath.TrimStart('/'));
+            var filepath = Path.Combine(_hostEnvironment.WebRootPath, invoice.Filepath!.TrimStart('/'));
 
-			if (!System.IO.File.Exists(filepath))
-				return NotFound("Invoice file not found");
+            if (!System.IO.File.Exists(filepath))
+                return NotFound("Invoice file not found");
 
-			return PhysicalFile(filepath, "application/pdf", Path.GetFileName(filepath));
-		}
-
-
+            return PhysicalFile(filepath, "application/pdf", Path.GetFileName(filepath));
+        }
 
 
 
@@ -420,5 +421,7 @@ namespace MyGymSystem.Controllers
 
 
 
-	}
+
+
+    }
 }

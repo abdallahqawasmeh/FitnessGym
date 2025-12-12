@@ -1,3 +1,48 @@
-﻿@{
+﻿@model IEnumerable<Trainer>
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/TrainerCards/Card.css">
+
+<section class="team-boxed" style="min-height:100vh; display:flex; align-items:center;">
+    <div class="container">
+        <div class="intro">
+            <h2 class="text-center">Our Experienced Trainers</h2>
+            <p class="text-center">Who are in extremely love with eco-friendly systems.</p>
+        </div>
+
+        <div class="row people">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 col-lg-4 item">
+                    <div class="box">
+                        <!-- Trainer Image -->
+                        <img class="rounded-circle"
+                             style="width:150px; height:150px; object-fit:cover;"
+                             src="@Url.Content(item.Imagepath != null ? $"~/Images/{item.Imagepath}" : "~/Images/default.jpg")" />
+
+                        <!-- Trainer Name -->
+                        <h3 class="name">@item.Firstname @item.Lastname</h3>
+
+                        <!-- Trainer Specialization -->
+                        <p class="title">@item.Specialization</p>
+
+                        <!-- Social Icons -->
+                        <div class="social">
+                            <a href="#"><i class="fa fa-facebook-official"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 }
