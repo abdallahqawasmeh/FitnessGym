@@ -1,0 +1,268 @@
+﻿@model MyGymSystem.Models.Contactuspage
+
+@{
+    ViewData["Title"] = "Edit Contact Us";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    string ImgOrDefault(string? path)
+    {
+        return Url.Content(!string.IsNullOrWhiteSpace(path) ? $"~/Images/{path}" : "~/Images/default.jpg");
+    }
+}
+
+<section class="py-4">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Contact Us Page Content</h2>
+                <p class="text-muted mb-0">Update contact info, intro content, map embed, and image. All fields are optional.</p>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a asp-controller="Admins" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <button type="submit" form="contactForm" class="btn btn-primary">
+                    <i class="bi bi-check2-circle"></i> Save Changes
+                </button>
+            </div>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <div>@TempData["Success"]</div>
+            </div>
+        }
+
+        <div class="row g-4">
+
+            <!-- LEFT: FORM -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+
+                        <form id="contactForm" asp-action="EditContact" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                            <!-- key -->
+                            <input type="hidden" asp-for="Contactuspageid" />
+
+                            <!-- =========================
+                                 HEADER / INTRO
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-window me-2 text-primary"></i>Header & Intro
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="PageTitle" class="form-label">Page Title</label>
+                                <input asp-for="PageTitle" class="form-control" placeholder="Example: Contact Us" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="IntroText" class="form-label">Intro Text</label>
+                                <textarea asp-for="IntroText" class="form-control" rows="3"
+                                          placeholder="Short intro above the contact form..."></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Contenet" class="form-label">Extra Content (Optional paragraph)</label>
+                                <textarea asp-for="Contenet" class="form-control" rows="3"
+                                          placeholder="Extra text (example: response time, support notes, etc.)"></textarea>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- =========================
+                                 CONTACT DETAILS
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-telephone me-2 text-success"></i>Contact Details
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label">Address</label>
+                                <input asp-for="Address" class="form-control" placeholder="Example: Amman, Jordan" />
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Phonenumber" class="form-label">Phone Number</label>
+                                    <input asp-for="Phonenumber" class="form-control" placeholder="Example: +962 7 9999 9999" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Email" class="form-label">Email</label>
+                                    <input asp-for="Email" class="form-control" placeholder="Example: info@example.com" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="WorkingHours" class="form-label">Working Hours</label>
+                                <input asp-for="WorkingHours" class="form-control" placeholder="Example: Sat–Thu 8:00 AM – 10:00 PM" />
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- =========================
+                                 MAP EMBED
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-geo-alt me-2 text-warning"></i>Map Embed
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="alert alert-info small mb-3">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Paste the <b>iframe embed code</b> from Google Maps. We will render it on the Contact page.
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Mapembedcode" class="form-label">Google Maps Embed Code</label>
+                                <textarea asp-for="Mapembedcode" class="form-control" rows="5"
+                                          placeholder="Paste iframe embed code here..."></textarea>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- =========================
+                                 IMAGE
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-image me-2 text-info"></i>Page Image
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="alert alert-info small mb-3">
+                                <i class="bi bi-info-circle me-1"></i>
+                                If you don’t upload a new image, the previous one will stay.
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Upload New Image</label>
+                                <input asp-for="picFile" type="file" class="form-control" accept="image/*" />
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    @if (Model.Lastupdated != null)
+                                    {
+                                        <span><i class="bi bi-clock me-1"></i>Last updated: @Model.Lastupdated</span>
+                                    }
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check2-circle"></i> Save
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: PREVIEW -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-semibold mb-3">
+                            <i class="bi bi-eye me-2 text-primary"></i>Preview
+                        </h5>
+
+                        <div class="border rounded overflow-hidden mb-3">
+                            <img src="@ImgOrDefault(Model.Picpath)" style="width:100%; height:220px; object-fit:cover;" />
+                        </div>
+
+                        <div class="p-3 rounded border bg-light">
+                            <h4 class="fw-bold mb-2">@(!string.IsNullOrWhiteSpace(Model.PageTitle) ? Model.PageTitle : "Contact Us")</h4>
+                            <p class="text-muted mb-3">
+                                @(!string.IsNullOrWhiteSpace(Model.IntroText) ? Model.IntroText : "Your intro text will appear here above the contact form.")
+                            </p>
+
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="small text-muted"><i class="bi bi-geo-alt me-1"></i>Address</div>
+                                        <div class="fw-semibold">@(!string.IsNullOrWhiteSpace(Model.Address) ? Model.Address : "—")</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="small text-muted"><i class="bi bi-telephone me-1"></i>Phone</div>
+                                        <div class="fw-semibold">@(!string.IsNullOrWhiteSpace(Model.Phonenumber) ? Model.Phonenumber : "—")</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="small text-muted"><i class="bi bi-envelope me-1"></i>Email</div>
+                                        <div class="fw-semibold">@(!string.IsNullOrWhiteSpace(Model.Email) ? Model.Email : "—")</div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="small text-muted"><i class="bi bi-clock me-1"></i>Working Hours</div>
+                                        <div class="fw-semibold">@(!string.IsNullOrWhiteSpace(Model.WorkingHours) ? Model.WorkingHours : "—")</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(Model.Contenet))
+                            {
+                                <hr />
+                                <div class="small text-muted">@Model.Contenet</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Preview -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h6 class="fw-semibold mb-2">
+                            <i class="bi bi-map me-2 text-success"></i>Map Preview
+                        </h6>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Mapembedcode))
+                        {
+                            <div class="border rounded overflow-hidden" style="height: 260px;">
+                                @Html.Raw(Model.Mapembedcode)
+                            </div>
+                            <div class="small text-muted mt-2">
+                                <i class="bi bi-info-circle me-1"></i>
+                                If the map looks wrong, re-copy the embed code from Google Maps.
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-muted small">
+                                No map embed code yet. Paste it in the form to preview here.
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

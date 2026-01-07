@@ -12,5 +12,10 @@
 
 		public virtual Member Member { get; set; } = null!;
 		public virtual Trainer Trainer { get; set; } = null!;
-	}
+
+        //NEW
+        public long? SubscriptionId { get; set; }
+        public virtual Subscription? Subscription { get; set; }
+
+    }
 }

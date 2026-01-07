@@ -86,7 +86,7 @@ namespace MyGymSystem.Controllers
         }
 
 
-
+        [HttpGet]
         public IActionResult Login()
         {
             
@@ -130,7 +130,7 @@ namespace MyGymSystem.Controllers
                         {
                             throw new Exception("Trainer ID is null for a user with Trainer role.");
                         }
-                        return RedirectToAction("Home", "Trainers");
+                        return RedirectToAction("Dashboard", "Trainers");
 
 
                     case 1:

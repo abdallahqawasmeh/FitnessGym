@@ -1,0 +1,196 @@
+﻿@model MyGymSystem.Join.MemberPrivatePlanVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "My Private Workout";
+}
+
+<div class="container py-4">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+        <div>
+            <h2 class="mb-1 fw-bold">My Private Workout</h2>
+            <p class="text-muted mb-0">Your trainer details and your workout plans.</p>
+        </div>
+    </div>
+
+    <!-- TRAINER CARD -->
+    <div class="mw-card p-3 p-md-4 mb-4">
+        <h5 class="fw-semibold mb-3">My Trainer</h5>
+
+        @if (Model.Trainer == null)
+        {
+            <div class="alert alert-warning mb-0">
+                You don’t have an active private trainer yet. Subscribe to the personal plan to choose one.
+            </div>
+        }
+        else
+        {
+            var t = Model.Trainer;
+            var img = !string.IsNullOrWhiteSpace(t.Imagepath)
+            ? Url.Content("~/Images/" + t.Imagepath)
+            : Url.Content("~/Images/default.jpg");
+
+            <div class="d-flex align-items-center gap-3">
+                <img src="@img" class="mw-avatar" alt="Trainer" />
+
+                <div class="flex-grow-1 mw-minw0">
+                    <div class="fw-bold fs-5 text-truncate">@t.Firstname @t.Lastname</div>
+
+                    <div class="text-muted small d-flex align-items-center gap-2 text-truncate">
+                        <i class="bi bi-envelope"></i>
+                        <span class="text-truncate">@t.Email</span>
+                    </div>
+
+                    <div class="text-muted small d-flex align-items-center gap-2 mt-1">
+                        <i class="bi bi-telephone"></i>
+                        <span>@(string.IsNullOrWhiteSpace(t.Phonenumber) ? "—" : t.Phonenumber)</span>
+                    </div>
+
+                    <div class="mt-2">
+                        <span class="badge mw-badge">
+                            <i class="bi bi-award"></i>
+                            @(string.IsNullOrWhiteSpace(t.Specialization) ? "General Trainer" : t.Specialization)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- WORKOUT PLANS -->
+    <div class="mw-card p-3 p-md-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-semibold mb-0">My Workout Plans</h5>
+            <span class="text-muted small">Total: @Model.Plans.Count</span>
+        </div>
+
+        @if (!Model.Plans.Any())
+        {
+            <div class="alert alert-info mb-0">
+                No workout plans yet. Your trainer will create plans here after you subscribe.
+            </div>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var p in Model.Plans)
+                {
+                    <div class="col-12 col-lg-6">
+                        <div class="mw-plan p-3">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div class="mw-minw0">
+                                    <div class="fw-bold text-truncate">@p.Planname</div>
+                                    <div class="text-muted small">
+                                        @(p.Startdate?.ToString("yyyy-MM-dd") ?? "—")
+                                        <span class="mx-1">→</span>
+                                        @(p.Enddate?.ToString("yyyy-MM-dd") ?? "—")
+                                    </div>
+                                </div>
+
+                                <span class="badge @(p.Status ? "bg-success" : "bg-secondary")">
+                                    @(p.Status ? "Active" : "Inactive")
+                                </span>
+                            </div>
+
+                            <div class="mt-3">
+                                <div class="mw-label">Goal</div>
+                                <div class="mw-value text-truncate">@(!string.IsNullOrWhiteSpace(p.Goal) ? p.Goal : "—")</div>
+                            </div>
+
+                            <div class="mt-2">
+                                <div class="mw-label">Schedule</div>
+                                <div class="mw-value text-truncate">@(!string.IsNullOrWhiteSpace(p.Schedule) ? p.Schedule : "—")</div>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(p.Plandescription))
+                            {
+                                <div class="mt-2">
+                                    <div class="mw-label">Description</div>
+                                    <div class="mw-desc">@p.Plandescription</div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(p.Routinedetails))
+                            {
+                                <details class="mt-3">
+                                    <summary class="mw-summary">Routine details</summary>
+                                    <div class="mw-routine mt-2">@p.Routinedetails</div>
+                                </details>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+</div>
+
+<style>
+    .mw-card{
+        background:#fff;
+        border:1px solid rgba(0,0,0,.06);
+        border-radius:18px;
+        box-shadow: 0 10px 30px rgba(17,24,39,.06);
+    }
+
+    .mw-avatar{
+        width:64px;
+        height:64px;
+        border-radius:50%;
+        object-fit:cover;
+        object-position:center;
+        border:2px solid rgba(108,74,182,.2);
+        background:#f3f4f6;
+        flex-shrink:0;
+    }
+
+    .mw-badge{
+        background: rgba(108,74,182,.12);
+        color: rgba(108,74,182,1);
+        border: 1px solid rgba(108,74,182,.22);
+        border-radius:999px;
+        padding:.4rem .7rem;
+        font-weight:600;
+    }
+
+    .mw-plan{
+        background: rgba(108,74,182,.05);
+        border:1px solid rgba(108,74,182,.14);
+        border-radius:16px;
+        height:100%;
+    }
+
+    .mw-label{
+        font-size: 12px;
+        color: rgba(107,114,128,.95);
+    }
+
+    .mw-value{
+        font-weight: 600;
+        color: rgba(17,24,39,.92);
+    }
+
+    .mw-desc{
+        color: rgba(17,24,39,.85);
+        font-size: 14px;
+        line-height: 1.45;
+    }
+
+    .mw-summary{
+        cursor:pointer;
+        font-weight:600;
+        color: rgba(108,74,182,1);
+    }
+
+    .mw-routine{
+        background:#fff;
+        border-radius:12px;
+        padding:12px;
+        border:1px solid rgba(0,0,0,.06);
+        white-space: pre-wrap;
+    }
+
+    .mw-minw0{ min-width: 0; }
+</style>

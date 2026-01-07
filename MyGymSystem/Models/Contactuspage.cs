@@ -17,5 +17,12 @@ namespace MyGymSystem.Models
         public long? Updatedbyadminid { get; set; }
         public DateTime? Lastupdated { get; set; }
         public virtual Admin? Updatedbyadmin { get; set; }
+
+        // =========================
+        // ✅ NEW (ADD ONLY) - extra page content (optional)
+        // =========================
+        public string? PageTitle { get; set; }
+        public string? IntroText { get; set; }
+        public string? WorkingHours { get; set; }
     }
 }

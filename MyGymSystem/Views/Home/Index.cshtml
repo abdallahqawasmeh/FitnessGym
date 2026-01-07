@@ -1,37 +1,106 @@
-﻿@model Tuple<IEnumerable<Membershipplan>,IEnumerable<Trainer>,IEnumerable<Homepage>,IEnumerable<Aboutuspage>,IEnumerable<Contactuspage>>
+﻿@model MyGymSystem.Join.HomePageVM
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var testimonials = (ViewBag.Testimonials as IEnumerable<Testimonial>)?.ToList() ?? new List<Testimonial>();
+
+    var home = Model?.Home;
+    var about = Model?.About;
+    var contact = Model?.Contact;
+
+    var plans = Model?.Plans ?? new List<Membershipplan>();
+    var trainers = Model?.Trainers ?? new List<Trainer>();
+    var testimonials = Model?.Testimonials ?? new List<Testimonial>();
     var testimonialsCount = testimonials.Count;
+
+    // ✅ 3 slider images (new fields) fallback to old Sliderimagepath then default
+    var s1 = !string.IsNullOrWhiteSpace(home?.Sliderimagepath1) ? home!.Sliderimagepath1 : home?.Sliderimagepath;
+    var s2 = !string.IsNullOrWhiteSpace(home?.Sliderimagepath2) ? home!.Sliderimagepath2 : home?.Sliderimagepath;
+    var s3 = !string.IsNullOrWhiteSpace(home?.Sliderimagepath3) ? home!.Sliderimagepath3 : home?.Sliderimagepath;
+
+    var sliderImages = new List<string?> { s1, s2, s3 }
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .ToList();
+
+    if (sliderImages.Count == 0)
+    {
+        sliderImages.Add(null); // force default image
+    }
 }
 
-
 <style>
-    /* Banner full height + overlay */
-    .banner-area {
+    /* =========================
+       ✅ IMPORTANT FIX:
+       Your _Layout has: <div class="container"><main>RenderBody</main></div>
+       That container limits width and creates white sides.
+       We override ONLY on this page.
+       ========================= */
+    body > .container {
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    body > .container > main {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* remove any horizontal overflow */
+    html, body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* FULL SCREEN carousel */
+    .hero-carousel,
+    .hero-carousel .carousel-inner,
+    .hero-carousel .carousel-item {
         height: 100vh;
-        position: relative;
+        width: 100vw;
+    }
+
+    .hero-slide {
+        height: 100vh;
+        width: 100vw;
         background-size: cover;
-        background-position: center;
+        background-position: center center;
+        background-repeat: no-repeat;
+        position: relative;
     }
 
     .overlay-bg {
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0,0,0,0.45);
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: -1;
+        inset: 0;
+        z-index: 0;
     }
 
-    /* Testimonials */
-    .testimonial-section {
-        padding: 50px 0;
-        background-color: #f9f9f9;
-        text-align: center;
+    .hero-content {
+        position: relative;
+        z-index: 1;
     }
 
+    /* remove carousel arrows */
+    .hero-carousel .carousel-control-prev,
+    .hero-carousel .carousel-control-next {
+        display: none !important;
+    }
+
+    /* keep dots only */
+    .hero-carousel .carousel-indicators {
+        margin-bottom: 20px;
+    }
+
+    /* ABOUT image consistent */
+    .about-img {
+        width: 100%;
+        height: 360px;          /* ✅ forces size */
+        object-fit: cover;      /* ✅ no stretching */
+        border-radius: 12px;
+        display: block;
+    }
+
+    /* testimonial cards (kept) */
     .testimonials-slider .testimonial-item {
         background: #fff;
         border: 1px solid #ddd;
@@ -40,101 +109,113 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         margin: 10px;
     }
-
-    .testimonial-photo img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 2px solid #ddd;
-    }
-
-    .testimonial-text p {
-        font-size: 16px;
-        color: #555;
-        font-style: italic;
-    }
-
-    .testimonial-text h5 {
-        font-weight: bold;
-        margin-top: 10px;
-        color: #333;
-    }
 </style>
 
 <link rel="stylesheet" href="~/css/TrainerCards/Card.css" />
 
-<!-- ===================== 1. HERO / BANNER ===================== -->
-@foreach (var item in Model.Item3)
-{
-        <section class="banner-area relative" id="home"
-                 style="background: url('@Url.Content(item.Sliderimagepath != null ? $"~/Images/{item.Sliderimagepath}" : "~/Images/default.jpg")') no-repeat center center/cover;">
-            <div class="overlay overlay-bg"></div>
-            <div class="container">
-                <div class="row fullscreen d-flex align-items-center justify-content-start">
-                    <div class="banner-content col-lg-12 col-md-12">
-                        <h1 class="text-uppercase">
-                        @item.Welcomemessage
-                        </h1>
-                        <p class="text-white text-uppercase pt-20 pb-20">
-                        @item.Featuredcontent
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-}
+<!-- ===================== 1) HERO (FULL SCREEN SLIDER every 6 seconds) ===================== -->
+<div id="homeHeroCarousel"
+     class="carousel slide hero-carousel"
+     data-bs-ride="carousel"
+     data-bs-interval="6000"
+     data-bs-pause="false"
+     data-bs-touch="true">
 
-<!-- ========================= ABOUT SECTION ========================= -->
+    <div class="carousel-inner">
+        @for (int i = 0; i < sliderImages.Count; i++)
+        {
+            var img = sliderImages[i];
+            var bg = img != null ? Url.Content($"~/Images/{img}") : Url.Content("~/Images/default.jpg");
+
+            <div class="carousel-item @(i == 0 ? "active" : "")">
+                <section class="hero-slide" style="background-image:url('@bg');">
+                    <div class="overlay-bg"></div>
+
+                    <div class="container-fluid hero-content">
+                        <div class="row d-flex align-items-center" style="min-height:100vh;">
+                            <div class="col-12 px-5">
+                                <h1 class="text-uppercase text-white">
+                                    @(string.IsNullOrWhiteSpace(home?.HeroTitle)
+                                        ? (home?.Welcomemessage ?? "WELCOME")
+                                        : home!.HeroTitle)
+                                </h1>
+
+                                <p class="text-white text-uppercase pt-20 pb-20">
+                                    @(string.IsNullOrWhiteSpace(home?.HeroSubtitle)
+                                        ? (home?.Featuredcontent ?? "")
+                                        : home!.HeroSubtitle)
+                                </p>
+
+                                @if (!string.IsNullOrWhiteSpace(home?.HeroButtonText) &&
+                                     !string.IsNullOrWhiteSpace(home?.HeroButtonUrl))
+                                {
+                                    <a class="btn btn-primary"
+                                       href="@home!.HeroButtonUrl"
+                                       style="border-radius:999px; padding:10px 22px;">
+                                        @home.HeroButtonText
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        }
+    </div>
+
+    <!-- Dots only -->
+    <div class="carousel-indicators">
+        @for (int i = 0; i < sliderImages.Count; i++)
+        {
+            <button type="button"
+                    data-bs-target="#homeHeroCarousel"
+                    data-bs-slide-to="@i"
+                    class="@(i == 0 ? "active" : "")"
+                    aria-current="@(i == 0 ? "true" : "false")"
+                    aria-label="Slide @(i + 1)"></button>
+        }
+    </div>
+</div>
+
+<!-- ========================= 2) ABOUT SECTION ========================= -->
 <section class="py-5" id="about">
     <div class="container">
-
-        <!-- Title & Intro -->
         <div class="row align-items-center gy-4">
             <div class="col-lg-6">
-                <h1 class="fw-bold mb-3">About Our Fitness Center</h1>
+                <h1 class="fw-bold mb-3">
+                    @(string.IsNullOrWhiteSpace(about?.PageTitle) ? "About Our Fitness Center" : about!.PageTitle)
+                </h1>
 
-                @foreach (var item in Model.Item4)
-                {
-                        <p class="lead text-muted mb-4">
-                        @item.Missionstatement
-                        </p>
+                <p class="lead text-muted mb-4">
+                    @(string.IsNullOrWhiteSpace(about?.IntroText)
+                        ? "We combine a modern gym experience with a smart management system."
+                        : about!.IntroText)
+                </p>
 
-                        <h5 class="fw-semibold mb-1">Our Vision</h5>
-                        <p class="mb-3">
-                        @item.Visionstatement
-                        </p>
-                }
+                <h5 class="fw-semibold mb-1">Our Vision</h5>
+                <p class="mb-3">
+                    @(string.IsNullOrWhiteSpace(about?.Visionstatement) ? "" : about!.Visionstatement)
+                </p>
             </div>
 
-            <!-- Image -->
             <div class="col-lg-6 text-center">
-                @foreach (var item in Model.Item4)
-                {
-                        <img src="@Url.Content(item.Imagepath != null ? $"~/Images/{item.Imagepath}" : "~/Home/img/f1.jpg")"
-                             class="img-fluid rounded"
-                             alt="About Image"
-                             style="max-height: 350px; object-fit: cover;">
-                }
+                <img src="@Url.Content(!string.IsNullOrWhiteSpace(about?.Imagepath) ? $"~/Images/{about!.Imagepath}" : "~/Home/img/f1.jpg")"
+                     class="about-img"
+                     alt="About Image" />
             </div>
         </div>
-
     </div>
 </section>
 
-
-<!-- ========================= WHAT WE OFFER ========================= -->
+<!-- ========================= 3) WHAT WE OFFER ========================= -->
 <section class="py-5 bg-light">
     <div class="container">
-
         <div class="text-center mb-5">
             <h2 class="fw-bold">What We Offer</h2>
             <p class="text-muted">Simple tools to keep your gym running smoothly.</p>
         </div>
 
         <div class="row gy-5 text-center">
-
-            <!-- Item 1 -->
             <div class="col-md-6 col-lg-3">
                 <div class="mb-3">
                     <i class="fa fa-id-card-o fa-2x text-primary"></i>
@@ -143,7 +224,6 @@
                 <p class="text-muted small mb-0">Build and manage flexible gym membership packages.</p>
             </div>
 
-            <!-- Item 2 -->
             <div class="col-md-6 col-lg-3">
                 <div class="mb-3">
                     <i class="fa fa-users fa-2x text-success"></i>
@@ -152,7 +232,6 @@
                 <p class="text-muted small mb-0">Assign trainers and track member workout plans.</p>
             </div>
 
-            <!-- Item 3 -->
             <div class="col-md-6 col-lg-3">
                 <div class="mb-3">
                     <i class="fa fa-bar-chart fa-2x text-warning"></i>
@@ -161,7 +240,6 @@
                 <p class="text-muted small mb-0">View activity insights and membership statistics.</p>
             </div>
 
-            <!-- Item 4 -->
             <div class="col-md-6 col-lg-3">
                 <div class="mb-3">
                     <i class="fa fa-credit-card fa-2x text-danger"></i>
@@ -169,13 +247,11 @@
                 <h5 class="fw-semibold mb-1">Payments & Feedback</h5>
                 <p class="text-muted small mb-0">Support online payments and collect testimonials.</p>
             </div>
-
         </div>
-
     </div>
 </section>
 
-<!-- ===================== 3. PLANS / PRICING (NEW CARDS) ===================== -->
+<!-- ===================== 4) PLANS ===================== -->
 <section class="price-area pt-100" id="plan">
     <div class="container">
         <div class="row d-flex justify-content-center">
@@ -188,68 +264,40 @@
         </div>
 
         <div class="plans-container">
-            @foreach (var item in Model.Item1)
+            @foreach (var item in plans)
             {
-                    <div class="plan">
-                        <div class="inner">
-                            <span class="pricing">
-                                <span>
-                                @item.Price <small>/ m</small>
-                                </span>
-                            </span>
-                            <p class="title">@item.Planname</p>
-                            <p class="info">@item.Description</p>
-                            <ul class="features">
-                                <li>
-                                    <span class="icon">
-                                        <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M0 0h24v24H0z" fill="none"></path>
-                                            <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path>
-                                        </svg>
-                                    </span>
-                                    <span>@item.Description1</span>
-                                </li>
-                                <li>
-                                    <span class="icon">
-                                        <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M0 0h24v24H0z" fill="none"></path>
-                                            <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path>
-                                        </svg>
-                                    </span>
-                                    <span>@item.Description2</span>
-                                </li>
-                                <li>
-                                    <span class="icon">
-                                        <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M0 0h24v24H0z" fill="none"></path>
-                                            <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path>
-                                        </svg>
-                                    </span>
-                                    <span>@item.Description3</span>
-                                </li>
-                            </ul>
-                            <div class="action">
+                <div class="plan">
+                    <div class="inner">
+                        <span class="pricing">
+                            <span>@item.Price <small>/ m</small></span>
+                        </span>
+                        <p class="title">@item.Planname</p>
+                        <p class="info">@item.Description</p>
+
+                        <ul class="features">
+                            <li><span class="icon">✔</span><span>@item.Description1</span></li>
+                            <li><span class="icon">✔</span><span>@item.Description2</span></li>
+                            <li><span class="icon">✔</span><span>@item.Description3</span></li>
+                        </ul>
+
+                        <div class="action">
                             @if (item.Plantype != "Personal")
                             {
-                                        <a class="button" asp-action="pay" asp-controller="Payment" asp-route-planid="@item.Planid">
-                                            Choose plan
-                                        </a>
+                                <a class="button" asp-action="pay" asp-controller="Payment" asp-route-planid="@item.Planid">Choose plan</a>
                             }
                             else
                             {
-                                        <a class="button" asp-action="Subscribe" asp-controller="Subscriptions" asp-route-planid="@item.Planid">
-                                            Go Private
-                                        </a>
+                                <a class="button" asp-action="Subscribe" asp-controller="Subscriptions" asp-route-planid="@item.Planid">Go Private</a>
                             }
-                            </div>
                         </div>
                     </div>
+                </div>
             }
         </div>
     </div>
 </section>
 
-<!-- ===================== 4. TRAINERS (NEW CARDS) ===================== -->
+<!-- ===================== 5) TRAINERS ===================== -->
 <section class="team-boxed" id="trainer" style="min-height:100vh; display:flex; align-items:center;">
     <div class="container">
         <div class="intro">
@@ -258,31 +306,30 @@
         </div>
 
         <div class="row people">
-            @foreach (var item in Model.Item2)
+            @foreach (var item in trainers)
             {
-                    <div class="col-md-6 col-lg-4 item">
-                        <div class="box">
-                            <img class="rounded-circle"
-                                 style="width:150px; height:150px; object-fit:cover;"
-                                 src="@Url.Content(item.Imagepath != null ? $"~/Images/{item.Imagepath}" : "~/Images/default.jpg")" />
-                            <h3 class="name">@item.Firstname @item.Lastname</h3>
-                            <p class="title">@item.Specialization</p>
-                            <div class="social">
-                                <a href="#"><i class="fa fa-facebook-official"></i></a>
-                                <a href="#"><i class="fa fa-twitter"></i></a>
-                                <a href="#"><i class="fa fa-instagram"></i></a>
-                            </div>
+                <div class="col-md-6 col-lg-4 item">
+                    <div class="box">
+                        <img class="rounded-circle"
+                             style="width:150px; height:150px; object-fit:cover;"
+                             src="@Url.Content(item.Imagepath != null ? $"~/Images/{item.Imagepath}" : "~/Images/default.jpg")" />
+                        <h3 class="name">@item.Firstname @item.Lastname</h3>
+                        <p class="title">@item.Specialization</p>
+                        <div class="social">
+                            <a href="#"><i class="fa fa-facebook-official"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
                         </div>
                     </div>
+                </div>
             }
         </div>
     </div>
 </section>
 
-
-<!-- ===================== TESTIMONIALS (SLIDER) ===================== -->
+<!-- ===================== 6) TESTIMONIALS (OWL) ===================== -->
 <section class="py-5" id="testimonials">
-    <div class="container" style="max-width: 850px;">   <!-- Smaller width -->
+    <div class="container" style="max-width: 850px;">
         <div class="row">
             <div class="col-lg-12 text-center mb-4">
                 <h2 class="fw-bold">What Our Clients Say</h2>
@@ -291,76 +338,68 @@
         </div>
 
         <div class="testimonials-slider owl-carousel">
-
             @if (testimonialsCount > 0)
             {
                 foreach (var testimonial in testimonials)
                 {
-                            <div class="testimonial-item text-center p-4 position-relative"
-                                 style="max-width: 360px; margin: auto;">
+                    <div class="testimonial-item text-center p-4 position-relative" style="max-width: 360px; margin: auto;">
+                        <div class="mb-3 d-flex justify-content-center">
+                            <img src="@Url.Content(testimonial.Member?.Imagepath != null ? $"~/Images/{testimonial.Member.Imagepath}" : "~/Images/default.jpg")"
+                                 class="rounded-circle shadow"
+                                 style="width:100px;height:100px;object-fit:cover; margin-top:-10px;">
+                        </div>
 
-                                <!-- IMAGE IN MIDDLE -->
-                                <div class="mb-3 d-flex justify-content-center">
-                                    <img src="@Url.Content(
-                                testimonial.Member?.Imagepath != null 
-                                    ? $"~/Images/{testimonial.Member.Imagepath}" 
-                                    : "~/Images/default.jpg")"
-                                         class="rounded-circle shadow"
-                                         style="width:100px;height:100px;object-fit:cover; margin-top:-10px;">
-                                </div>
+                        <p class="fst-italic text-muted" style="font-size: 0.95rem;">
+                            "@testimonial.Feedbacktext"
+                        </p>
 
-                                <!-- FEEDBACK -->
-                                <p class="fst-italic text-muted" style="font-size: 0.95rem;">
-                                    "@testimonial.Feedbacktext"
-                                </p>
-
-                                <!-- NAME -->
-                                <h6 class="fw-bold mt-3 mb-0">
+                        <h6 class="fw-bold mt-3 mb-0">
                             @testimonial.Member?.Firstname @testimonial.Member?.Lastname
-                                </h6>
-                            </div>
+                        </h6>
+                    </div>
                 }
             }
             else
             {
-                    <p class="text-center">No testimonials available at the moment.</p>
+                <p class="text-center">No testimonials available at the moment.</p>
             }
-
         </div>
     </div>
 </section>
 
 @section Scripts {
-        <script>
-            $(function () {
-                var count = @testimonialsCount;
+    <script>
+        $(function () {
+            var count = @testimonialsCount;
 
-                if (count > 1) {
-                    $(".testimonials-slider").owlCarousel({
-                        loop: true,
-                        margin: 25,
-                        center: true,
-                        nav: false,
-                        dots: true,
-                        autoplay: true,
-                        autoplayTimeout: 3500,
-                        responsive: {
-                            0: { items: 1 },
-                            768: { items: 2 },
-                            1200: { items: 3 }
-                        }
-                    });
-                } else {
-                    $(".testimonials-slider").owlCarousel({
-                        loop: false,
-                        nav: false,
-                        dots: false,
-                        items: 1
-                    });
-                }
-            });
-        </script>
+            if (count > 1) {
+                $(".testimonials-slider").owlCarousel({
+                    loop: true,
+                    margin: 25,
+                    center: true,
+                    nav: false,
+                    dots: true,
+                    autoplay: true,
+                    autoplayTimeout: 3500,
+                    responsive: {
+                        0: { items: 1 },
+                        768: { items: 2 },
+                        1200: { items: 3 }
+                    }
+                });
+            } else {
+                $(".testimonials-slider").owlCarousel({
+                    loop: false,
+                    nav: false,
+                    dots: false,
+                    items: 1
+                });
+            }
+        });
+    </script>
 }
+
+
 
  @* <!-- ===================== 7. CONTACT US (SIMPLE FORM BLOCK) ===================== -->
  <section id="contact" class="py-5">

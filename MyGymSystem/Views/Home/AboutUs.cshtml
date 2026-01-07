@@ -1,9 +1,9 @@
-﻿@model IEnumerable<Aboutuspage>
+﻿@model MyGymSystem.Join.AboutUsVM
 @using System.Linq
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var about = Model?.FirstOrDefault();
+    var about = Model?.Page; // ✅ from DB (row id=1)
 }
 
 <!-- HERO / INTRO -->
@@ -12,31 +12,38 @@
         <div class="row align-items-center gy-4">
             <!-- Text -->
             <div class="col-lg-6">
-                <h1 class="fw-bold mb-3">About Our Fitness Center</h1>
+                <h1 class="fw-bold mb-3">
+                    @(string.IsNullOrWhiteSpace(about?.PageTitle)
+                            ? "About Our Fitness Center"          // ✅ fallback keeps your same text
+                            : about!.PageTitle)
+                </h1>
 
                 <p class="lead text-muted mb-4">
-                    We combine a modern gym experience with a smart management system that makes life easier
-                    for members, trainers, and admins.
+                    @(string.IsNullOrWhiteSpace(about?.IntroText)
+                            ? "We combine a modern gym experience with a smart management system that makes life easier for members, trainers, and admins."
+                            : about!.IntroText)
                 </p>
 
                 <h5 class="fw-semibold mb-1">Our Mission</h5>
                 <p class="mb-3">
                     @(string.IsNullOrWhiteSpace(about?.Missionstatement)
                             ? "To help people stay active and healthy through an organized, welcoming, and well-managed fitness environment."
-                            : about.Missionstatement)
+                            : about!.Missionstatement)
                 </p>
 
                 <h5 class="fw-semibold mb-1">Our Vision</h5>
                 <p class="mb-0">
                     @(string.IsNullOrWhiteSpace(about?.Visionstatement)
                             ? "To become a trusted fitness destination supported by a smart digital system."
-                            : about.Visionstatement)
+                            : about!.Visionstatement)
                 </p>
             </div>
 
             <!-- Image -->
             <div class="col-lg-6 text-center">
-                <img src="@Url.Content(about?.Imagepath != null ? $"~/Images/{about.Imagepath}" : "~/Home/img/f1.jpg")"
+                <img src="@Url.Content(!string.IsNullOrWhiteSpace(about?.Imagepath)
+                        ? $"~/Images/{about!.Imagepath}"
+                        : "~/Home/img/f1.jpg")"
                      class="img-fluid rounded"
                      alt="Gym Image" />
             </div>
@@ -44,95 +51,143 @@
     </div>
 </section>
 
-<!-- WHAT WE OFFER -->
-<section class="py-5 bg-light">
+<!-- WHAT OUR SYSTEM HELPS WITH -->
+<section class="py-5 bg-light mb-5">
     <div class="container">
-        <div class="text-center mb-4">
+
+        <!-- Section header -->
+        <div class="text-center mb-5">
             <h2 class="fw-bold mb-2">What Our System Helps With</h2>
             <p class="text-muted mb-0">
                 Simple tools that keep your gym organized and your members happy.
             </p>
         </div>
 
-        <div class="row gy-4 text-center">
+        <div class="row g-4 text-center">
+
+            <!-- Membership Plans -->
             <div class="col-md-6 col-lg-3">
-                <div class="mb-2">
-                    <i class="fa fa-id-card-o fa-2x text-primary" aria-hidden="true"></i>
+                <div class="card h-100 shadow-sm border-0 p-4 feature-card">
+                    <div class="mb-3">
+                        <i class="fa fa-id-card-o fa-2x text-primary"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-2">Membership Plans</h5>
+                    <p class="text-muted small mb-0">
+                        Create and manage different memberships and packages tailored to your members.
+                    </p>
                 </div>
-                <h5 class="fw-semibold mb-1">Membership Plans</h5>
-                <p class="text-muted small mb-0">
-                    Create and manage different memberships and packages tailored to your members.
-                </p>
             </div>
 
+            <!-- Trainers & Members -->
             <div class="col-md-6 col-lg-3">
-                <div class="mb-2">
-                    <i class="fa fa-users fa-2x text-success" aria-hidden="true"></i>
+                <div class="card h-100 shadow-sm border-0 p-4 feature-card">
+                    <div class="mb-3">
+                        <i class="fa fa-users fa-2x text-success"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-2">Trainers & Members</h5>
+                    <p class="text-muted small mb-0">
+                        Connect trainers with members and keep workouts and progress in one place.
+                    </p>
                 </div>
-                <h5 class="fw-semibold mb-1">Trainers & Members</h5>
-                <p class="text-muted small mb-0">
-                    Connect trainers with members and keep workouts and progress in one place.
-                </p>
             </div>
 
+            <!-- Reports & Stats -->
             <div class="col-md-6 col-lg-3">
-                <div class="mb-2">
-                    <i class="fa fa-bar-chart fa-2x text-warning" aria-hidden="true"></i>
+                <div class="card h-100 shadow-sm border-0 p-4 feature-card">
+                    <div class="mb-3">
+                        <i class="fa fa-bar-chart fa-2x text-warning"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-2">Reports & Stats</h5>
+                    <p class="text-muted small mb-0">
+                        View useful statistics about active members, plans, and overall activity.
+                    </p>
                 </div>
-                <h5 class="fw-semibold mb-1">Reports & Stats</h5>
-                <p class="text-muted small mb-0">
-                    View useful statistics about active members, plans, and overall activity.
-                </p>
             </div>
 
+            <!-- Payments & Feedback -->
             <div class="col-md-6 col-lg-3">
-                <div class="mb-2">
-                    <i class="fa fa-credit-card fa-2x text-danger" aria-hidden="true"></i>
+                <div class="card h-100 shadow-sm border-0 p-4 feature-card">
+                    <div class="mb-3">
+                        <i class="fa fa-credit-card fa-2x text-danger"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-2">Online Payments & Feedback</h5>
+                    <p class="text-muted small mb-0">
+                        Support online payments and collect member testimonials about their experience.
+                    </p>
                 </div>
-                <h5 class="fw-semibold mb-1">Online Payments & Feedback</h5>
-                <p class="text-muted small mb-0">
-                    Support online payments and collect member testimonials about their experience.
-                </p>
             </div>
+
         </div>
     </div>
 </section>
 
+
 <!-- WHO USES THE SYSTEM -->
-<section class="py-5">
+<section class="py-5 mb-5"> <!-- mb-5 = space before footer -->
     <div class="container">
-        <div class="text-center mb-4">
+
+        <!-- Section header -->
+        <div class="text-center mb-5">
             <h2 class="fw-bold mb-2">Who Uses Our System?</h2>
             <p class="text-muted mb-0">
                 Clear roles so everyone can focus on what matters.
             </p>
         </div>
 
-        <div class="row gy-4 text-center">
+        <div class="row g-4 text-center">
+
+            <!-- Admin -->
             <div class="col-md-6 col-lg-3">
-                <h5 class="fw-semibold mb-1">Admin</h5>
-                <p class="text-muted small mb-0">
-                    Manages members, trainers, plans, content, and reports.
-                </p>
+                <div class="card h-100 shadow-sm border-0 p-4 who-card">
+                    <div class="mb-3">
+                        <i class="bi bi-shield-lock-fill text-primary fs-1"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-2">Admin</h5>
+                    <p class="text-muted small mb-0">
+                        Manages members, trainers, plans, content, and reports.
+                    </p>
+                </div>
             </div>
+
+            <!-- Member -->
             <div class="col-md-6 col-lg-3">
-                <h5 class="fw-semibold mb-1">Member</h5>
-                <p class="text-muted small mb-0">
-                    Registers, subscribes to plans, follows workouts, and shares feedback.
-                </p>
+                <div class="card h-100 shadow-sm border-0 p-4 who-card">
+                    <div class="mb-3">
+                        <i class="bi bi-person-fill text-success fs-1"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-2">Member</h5>
+                    <p class="text-muted small mb-0">
+                        Registers, subscribes to plans, follows workouts, and shares feedback.
+                    </p>
+                </div>
             </div>
+
+            <!-- Trainer -->
             <div class="col-md-6 col-lg-3">
-                <h5 class="fw-semibold mb-1">Trainer</h5>
-                <p class="text-muted small mb-0">
-                    Manages assigned members and designs workout plans.
-                </p>
+                <div class="card h-100 shadow-sm border-0 p-4 who-card">
+                    <div class="mb-3">
+                        <i class="bi bi-clipboard-heart-fill text-warning fs-1"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-2">Trainer</h5>
+                    <p class="text-muted small mb-0">
+                        Manages assigned members and designs workout plans.
+                    </p>
+                </div>
             </div>
+
+            <!-- Guest -->
             <div class="col-md-6 col-lg-3">
-                <h5 class="fw-semibold mb-1">Guest</h5>
-                <p class="text-muted small mb-0">
-                    Can explore plans, trainers, testimonials, and contact information.
-                </p>
+                <div class="card h-100 shadow-sm border-0 p-4 who-card">
+                    <div class="mb-3">
+                        <i class="bi bi-eye-fill text-danger fs-1"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-2">Guest</h5>
+                    <p class="text-muted small mb-0">
+                        Can explore plans, trainers, testimonials, and contact information.
+                    </p>
+                </div>
             </div>
+
         </div>
     </div>
 </section>

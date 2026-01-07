@@ -20,8 +20,24 @@ namespace MyGymSystem.Controllers
         }
 
         // GET: Membershipplans
+        private void FillLayoutData()
+        {
+            ViewData["name"] = HttpContext.Session.GetString("AdminName");
+            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+
+            var AdminId = HttpContext.Session.GetInt32("AdminId");
+            if (AdminId != null)
+            {
+                var admin = _context.Admins.FirstOrDefault(m => m.Adminid == AdminId);
+                if (admin != null)
+                {
+                    ViewData["AdminImage"] = admin.Imagepath;
+                }
+            }
+        }
         public async Task<IActionResult> Index()
         {
+            FillLayoutData();
             var gymDbContext = _context.Membershipplans.Include(m => m.Createdbyadmin);
             return View(await gymDbContext.ToListAsync());
         }
@@ -29,6 +45,7 @@ namespace MyGymSystem.Controllers
         // GET: Membershipplans/Details/5
         public async Task<IActionResult> Details(long? id)
         {
+            FillLayoutData();
             if (id == null)
             {
                 return NotFound();
@@ -48,6 +65,8 @@ namespace MyGymSystem.Controllers
         // GET: Membershipplans/Create
         public IActionResult Create()
         {
+            FillLayoutData();
+
             ViewData["Createdbyadminid"] = new SelectList(_context.Admins, "Adminid", "Adminid");
             return View();
         }
@@ -59,6 +78,9 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Planid,Planname,Description,Description1,Description2,Description3,Description4,Durationmonths,Price,Createdbyadminid,Plantype,Status")] Membershipplan membershipplan)
         {
+
+            FillLayoutData();
+
             if (ModelState.IsValid)
             {
                 _context.Add(membershipplan);
@@ -74,6 +96,8 @@ namespace MyGymSystem.Controllers
         // GET: Membershipplans/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
+            FillLayoutData();
+
             if (id == null)
             {
                 return NotFound();
@@ -95,6 +119,9 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Planid,Planname,Description,Description1,Description2,Description3,Description4,Durationmonths,Price,Createdbyadminid,Plantype,Status")] Membershipplan membershipplan)
         {
+
+            FillLayoutData();
+
             if (id != membershipplan.Planid)
             {
                 return NotFound();
@@ -127,6 +154,9 @@ namespace MyGymSystem.Controllers
         // GET: Membershipplans/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
+
+            FillLayoutData();
+
             if (id == null)
             {
                 return NotFound();
@@ -148,6 +178,7 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
+
             var membershipplan = await _context.Membershipplans.FindAsync(id);
             if (membershipplan != null)
             {

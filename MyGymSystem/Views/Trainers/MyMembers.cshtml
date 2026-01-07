@@ -1,0 +1,507 @@
+﻿@model IEnumerable<MyGymSystem.Models.Member>
+
+@{
+    Layout = "~/Views/Shared/_TrainerLayout.cshtml";
+    ViewData["Title"] = "My Members";
+    ViewData["Subtitle"] = "Members who selected you in the personal plan";
+}
+
+<!-- Toolbar -->
+<div class="td-toolbar mb-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <h2 class="mb-1">My Members</h2>
+            <p class="text-muted mb-0">Search, sort, and manage workout plans.</p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap align-items-center justify-content-end">
+            <!-- Search -->
+            <div class="td-search">
+                <i class="bi bi-search"></i>
+                <input id="memberSearch" type="text" class="form-control td-search-input"
+                       placeholder="Search by name, email, phone..." />
+                <button type="button" id="clearSearch" class="btn td-clear-btn d-none" title="Clear">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- Sort -->
+            <select id="sortSelect" class="form-select td-sort">
+                <option value="az">Sort: Name A–Z</option>
+                <option value="za">Sort: Name Z–A</option>
+                <option value="emailaz">Sort: Email A–Z</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Filter chips (views-only) -->
+    <div class="d-flex flex-wrap gap-2 mt-3">
+        <button type="button" class="td-chip active" data-filter="all">All</button>
+        <button type="button" class="td-chip" data-filter="hasEmail">Has Email</button>
+        <button type="button" class="td-chip" data-filter="hasPhone">Has Phone</button>
+        <button type="button" class="td-chip" data-filter="hasGoal">Has Goal</button>
+        <button type="button" class="td-chip" data-filter="hasDob">Has DOB</button>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="td-card p-4">
+        <h5 class="mb-2">No members yet</h5>
+        <p class="text-muted mb-0">
+            When a member subscribes to the personal plan and chooses you, they will appear here.
+        </p>
+    </div>
+}
+else
+{
+    <div class="row g-3" id="membersGrid">
+        @foreach (var m in Model)
+        {
+            var imgPath = !string.IsNullOrWhiteSpace(m.Imagepath)
+            ? Url.Content("~/Images/" + m.Imagepath)
+            : Url.Content("~/Images/default.jpg");
+
+            var fullName = $"{m.Firstname} {m.Lastname}".Trim();
+            var email = m.Email ?? "";
+            var phone = m.Phonenumber ?? "";
+            var goal = m.Fitnessgoal ?? "";
+            var dob = m.Dateofbirth?.ToString("yyyy-MM-dd") ?? "";
+
+            <div class="col-12 col-md-6 col-xl-4 member-card"
+                 data-name="@fullName.ToLower()"
+                 data-email="@email.ToLower()"
+                 data-phone="@phone.ToLower()"
+                 data-goal="@goal.ToLower()"
+                 data-dob="@dob.ToLower()"
+                 data-search="@($"{fullName} {email} {phone} {goal} {dob}".ToLower())">
+
+                <div class="td-card p-3 p-md-4 h-100 td-member-card">
+                    <div class="d-flex align-items-start gap-3">
+                        <img src="@imgPath" class="td-avatar-lg" alt="Member" />
+
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-start justify-content-between gap-2">
+                                <div>
+                                    <div class="fw-bold fs-6 mb-1 td-text" data-field="name">@fullName</div>
+
+                                    <div class="text-muted small d-flex align-items-center gap-2">
+                                        <i class="bi bi-envelope"></i>
+                                        <span class="td-text text-truncate" data-field="email">@email</span>
+                                    </div>
+
+                                    <div class="text-muted small d-flex align-items-center gap-2 mt-1">
+                                        <i class="bi bi-telephone"></i>
+                                        <span class="td-text" data-field="phone">@(!string.IsNullOrWhiteSpace(phone) ? phone : "—")</span>
+                                    </div>
+                                </div>
+
+                                <!-- Quick actions menu -->
+                                <div class="dropdown">
+                                    <button class="btn td-menu-btn dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                        <li>
+                                            <a class="dropdown-item"
+                                               href="@Url.Action("MemberPlans", "Trainers", new { memberId = m.Memberid })">
+                                                <i class="bi bi-gear me-2"></i> Manage Plans
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item td-create-link"
+                                               href="@Url.Action("CreateWorkoutPlan", "Trainers", new { memberId = m.Memberid })"
+                                               data-member="@fullName">
+                                                <i class="bi bi-plus-circle me-2"></i> Create New Plan
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                        <li>
+                                            <a class="dropdown-item"
+                                               href="mailto:@email">
+                                                <i class="bi bi-envelope-at me-2"></i> Email Member
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 td-info">
+                                <div>
+                                    <div class="td-label">DOB</div>
+                                    <div class="td-value">@(!string.IsNullOrWhiteSpace(dob) ? dob : "—")</div>
+                                </div>
+                                <div>
+                                    <div class="td-label">Goal</div>
+                                    <div class="td-value text-truncate">@(!string.IsNullOrWhiteSpace(goal) ? goal : "—")</div>
+                                </div>
+                            </div>
+
+                            <!-- Main buttons -->
+                            <div class="d-flex gap-2 mt-3">
+                                <a class="btn td-btn-primary text-white w-100"
+                                   asp-action="MemberPlans"
+                                   asp-controller="Trainers"
+                                   asp-route-memberId="@m.Memberid">
+                                    <i class="bi bi-gear"></i> Manage
+                                </a>
+
+                                <a class="btn td-btn-outline w-100 td-create-link"
+                                   href="@Url.Action("CreateWorkoutPlan", "Trainers", new { memberId = m.Memberid })"
+                                   data-member="@fullName">
+                                    <i class="bi bi-plus-circle"></i> Create
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+
+    <!-- Empty after filtering/search -->
+    <div id="noResults" class="td-card p-4 mt-3 d-none">
+        <h5 class="mb-2">No results</h5>
+        <p class="text-muted mb-3">Try a different search or clear filters.</p>
+        <button class="btn td-btn-outline" id="resetAll">
+            <i class="bi bi-arrow-counterclockwise"></i> Reset
+        </button>
+    </div>
+}
+
+<!-- Confirm Modal (views-only) -->
+<div class="modal fade" id="confirmCreateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content td-modal">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Create Workout Plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                You are about to create a new workout plan for <span class="fw-bold" id="memberNameInModal"></span>.
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn td-btn-outline" data-bs-dismiss="modal">Cancel</button>
+                <a class="btn td-btn-primary text-white" id="confirmCreateBtn" href="#">
+                    <i class="bi bi-plus-circle"></i> Continue
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const search = document.getElementById('memberSearch');
+        const clearBtn = document.getElementById('clearSearch');
+        const sortSelect = document.getElementById('sortSelect');
+        const chips = document.querySelectorAll('.td-chip');
+        const grid = document.getElementById('membersGrid');
+        const cards = Array.from(document.querySelectorAll('.member-card'));
+        const noResults = document.getElementById('noResults');
+        const resetAll = document.getElementById('resetAll');
+
+        let activeFilter = 'all';
+
+        function applyFilters() {
+            const q = (search?.value || '').toLowerCase().trim();
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const hay = card.dataset.search || '';
+                const matchesSearch = !q || hay.includes(q);
+
+                let matchesFilter = true;
+                if (activeFilter === 'hasEmail') matchesFilter = (card.dataset.email || '').trim().length > 0;
+                if (activeFilter === 'hasPhone') matchesFilter = (card.dataset.phone || '').trim().length > 0;
+                if (activeFilter === 'hasGoal') matchesFilter = (card.dataset.goal || '').trim().length > 0;
+                if (activeFilter === 'hasDob') matchesFilter = (card.dataset.dob || '').trim().length > 0;
+
+                const show = matchesSearch && matchesFilter;
+                card.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+
+            if (noResults) noResults.classList.toggle('d-none', visibleCount > 0);
+            if (clearBtn) clearBtn.classList.toggle('d-none', !search.value);
+        }
+
+        function sortCards() {
+            if (!grid) return;
+
+            const type = sortSelect.value;
+
+            const sorted = cards.slice().sort((a, b) => {
+                const nameA = (a.dataset.name || '');
+                const nameB = (b.dataset.name || '');
+                const emailA = (a.dataset.email || '');
+                const emailB = (b.dataset.email || '');
+
+                if (type === 'az') return nameA.localeCompare(nameB);
+                if (type === 'za') return nameB.localeCompare(nameA);
+                if (type === 'emailaz') return emailA.localeCompare(emailB);
+                return 0;
+            });
+
+            sorted.forEach(c => grid.appendChild(c));
+        }
+
+        search?.addEventListener('input', () => { applyFilters(); highlightSearch(); });
+        clearBtn?.addEventListener('click', () => {
+            search.value = '';
+            applyFilters();
+            highlightSearch();
+            search.focus();
+        });
+
+        sortSelect?.addEventListener('change', () => { sortCards(); applyFilters(); });
+
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                activeFilter = chip.dataset.filter;
+                applyFilters();
+                highlightSearch();
+            });
+        });
+
+        resetAll?.addEventListener('click', () => {
+            search.value = '';
+            activeFilter = 'all';
+            chips.forEach(c => c.classList.toggle('active', c.dataset.filter === 'all'));
+            sortSelect.value = 'az';
+            sortCards();
+            applyFilters();
+            highlightSearch();
+        });
+
+        function highlightSearch() {
+            const q = (search?.value || '').trim();
+            document.querySelectorAll('.td-text').forEach(el => { el.innerHTML = el.textContent; });
+            if (!q) return;
+
+            const regex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'ig');
+
+            document.querySelectorAll('.member-card').forEach(card => {
+                if (card.style.display === 'none') return;
+                card.querySelectorAll('.td-text').forEach(el => {
+                    const txt = el.textContent;
+                    el.innerHTML = txt.replace(regex, (m) => `<mark class="td-mark">${m}</mark>`);
+                });
+            });
+        }
+
+        const modalEl = document.getElementById('confirmCreateModal');
+        const modal = modalEl ? new bootstrap.Modal(modalEl) : null;
+        const memberNameInModal = document.getElementById('memberNameInModal');
+        const confirmCreateBtn = document.getElementById('confirmCreateBtn');
+
+        document.querySelectorAll('.td-create-link').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const name = a.dataset.member || 'this member';
+                const href = a.getAttribute('href');
+                if (memberNameInModal) memberNameInModal.textContent = name;
+                if (confirmCreateBtn) confirmCreateBtn.setAttribute('href', href);
+                modal?.show();
+            });
+        });
+
+        sortCards();
+        applyFilters();
+    </script>
+}
+
+<style>
+    /* Toolbar */
+    .td-toolbar {
+        position: sticky;
+        top: 72px;
+        z-index: 2;
+        background: rgba(255,255,255,.8);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 14px;
+        border: 1px solid rgba(0,0,0,.05);
+    }
+
+    /* Search */
+    .td-search {
+        position: relative;
+        width: 320px;
+        max-width: 100%;
+    }
+
+        .td-search i {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            transform: translateY(-50%);
+            color: rgba(107,114,128,.9);
+            pointer-events: none;
+        }
+
+    .td-search-input {
+        padding-left: 36px;
+        padding-right: 36px;
+        border-radius: 14px;
+    }
+
+    .td-clear-btn {
+        position: absolute;
+        top: 50%;
+        right: 8px;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        color: rgba(107,114,128,.9);
+        padding: 6px;
+        border-radius: 10px;
+    }
+
+        .td-clear-btn:hover {
+            background: rgba(0,0,0,.05);
+        }
+
+    /* Sort */
+    .td-sort {
+        border-radius: 14px;
+        width: 170px;
+    }
+
+    /* Chips */
+    .td-chip {
+        border: 1px solid rgba(0,0,0,.08);
+        background: #fff;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 13px;
+        color: rgba(17,24,39,.85);
+    }
+
+        .td-chip:hover {
+            background: rgba(108,74,182,.05);
+        }
+
+        .td-chip.active {
+            background: rgba(108,74,182,.12);
+            border-color: rgba(108,74,182,.25);
+            color: rgba(108,74,182,1);
+        }
+
+    /* Avatar */
+    .td-avatar-lg {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
+        border: 2px solid rgba(108,74,182,.18);
+        background: #f3f4f6;
+        flex-shrink: 0;
+    }
+
+    /* Card */
+    .td-member-card {
+        transition: transform .12s ease, box-shadow .12s ease;
+        /* ✅ FIX 1: prevent card from overflowing its column */
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+        /* ✅ FIX 2: prevent flex children from forcing overflow */
+        .td-member-card * {
+            min-width: 0;
+        }
+
+        /* ✅ FIX 3: make the main flex container shrink correctly */
+        .td-member-card .flex-grow-1 {
+            min-width: 0;
+        }
+
+        /* ✅ FIX 4: buttons should wrap instead of pushing width */
+        .td-member-card .d-flex.gap-2.mt-3 {
+            flex-wrap: wrap;
+        }
+
+            .td-member-card .d-flex.gap-2.mt-3 .btn {
+                flex: 1 1 140px;
+            }
+
+        .td-member-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 35px rgba(17,24,39,.08);
+        }
+
+    /* Info */
+    .td-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 12px;
+        border-radius: 14px;
+        background: rgba(108,74,182,.05);
+        border: 1px solid rgba(108,74,182,.12);
+    }
+
+    .td-label {
+        font-size: 12px;
+        color: rgba(107,114,128,.9);
+    }
+
+    .td-value {
+        font-weight: 600;
+        color: rgba(17,24,39,.92);
+    }
+
+    /* Buttons */
+    .td-btn-primary {
+        background: var(--td-primary);
+        border: none;
+        border-radius: 14px;
+        padding: 10px 12px;
+    }
+
+        .td-btn-primary:hover {
+            background: #5B3FA1;
+        }
+
+    .td-btn-outline {
+        border: 1px solid var(--td-border);
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px 12px;
+    }
+
+    /* Menu button */
+    .td-menu-btn {
+        border: 1px solid rgba(0,0,0,.08);
+        background: #fff;
+        border-radius: 12px;
+        padding: 6px 10px;
+        color: rgba(17,24,39,.75);
+    }
+
+        .td-menu-btn:hover {
+            background: rgba(0,0,0,.05);
+        }
+
+    /* Highlight */
+    .td-mark {
+        background: rgba(108,74,182,.18);
+        color: rgba(17,24,39,.9);
+        padding: 0 2px;
+        border-radius: 6px;
+    }
+
+    /* Modal */
+    .td-modal {
+        border-radius: 18px;
+        border: 1px solid rgba(0,0,0,.06);
+    }
+</style>

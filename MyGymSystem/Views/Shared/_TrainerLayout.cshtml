@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Trainer</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <link href="~/css/TrainerLayout/Trainer.css" rel="stylesheet" />
+</head>
+<body class="td-body">
+    <div class="td-shell">
+        <!-- Sidebar -->
+        <aside class="td-sidebar">
+            <div class="td-brand">
+                <div class="td-logo"><i class="bi bi-lightning-charge-fill"></i></div>
+                <div>
+                    <div class="td-brand-title">Trainer</div>
+                    <div class="td-brand-sub">Dashboard</div>
+                </div>
+            </div>
+
+            <nav class="td-nav">
+                <a class="td-nav-link @(ViewContext.RouteData.Values["action"]?.ToString()=="Dashboard" ? "active":"")"
+                   asp-controller="Trainers" asp-action="Dashboard">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+
+                <a class="td-nav-link @(ViewContext.RouteData.Values["action"]?.ToString()=="MyMembers" ? "active":"")"
+                   asp-controller="Trainers" asp-action="MyMembers">
+                    <i class="bi bi-people"></i> My Members
+                </a>
+
+
+                <a class="td-nav-link @(ViewContext.RouteData.Values["action"]?.ToString()=="Edit" ? "active":"")"
+                   asp-controller="Trainers" asp-action="Edit" asp-route-id="@ViewData["Tid"]">
+                    <i class="bi bi-person-circle"></i> Profile
+                </a>
+            </nav>
+
+            <div class="td-sidebar-footer">
+                <a class="td-nav-link text-danger" asp-controller="Authentication" asp-action="Logout">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="td-main">
+            <header class="td-topbar">
+                <div>
+                    <div class="td-page-title">@ViewData["Title"]</div>
+                    <div class="td-page-sub">@ViewData["Subtitle"]</div>
+                </div>
+
+                <div class="td-top-actions">
+                    <a class="btn td-btn-outline" asp-controller="TrainerDashboard" asp-action="Profile">
+                        <i class="bi bi-gear"></i> Settings
+                    </a>
+                </div>
+            </header>
+
+            <section class="td-content">
+                @RenderBody()
+            </section>
+
+            <footer class="td-footer">
+                <span>© @DateTime.Now.Year MyGymSystem</span>
+            </footer>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

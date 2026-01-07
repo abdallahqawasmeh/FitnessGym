@@ -1,114 +1,166 @@
 ﻿@model MyGymSystem.Models.Admin
 
-
 @{
-       ViewData["Title"] = "Home";
-       Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
-}
-
-<link rel="stylesheet" href="~/css/Admin/AdminDashboardCards/Cards.css" />
-
-@{
+    ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<link rel="stylesheet" href="~/css/Admin/AdminDashboardCards/Cards.css" />
+<style>
+
+
+    .stat-card {
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,.35);
+        }
+
+
+</style>
 <!-- Dashboard Cards -->
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
 
         <!-- Total Members -->
         <div class="col-12 col-md-6 col-xl-4">
-            <div class="card bg-secondary border-0 shadow-sm stat-card">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-circle bg-primary text-white me-3 d-flex align-items-center justify-content-center">
-                        <i class="fa fa-users"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <p class="mb-1 text-light small text-uppercase">Total Members</p>
-                        <h4 class="mb-0 text-white fw-semibold count-up" data-target="@ViewBag.MembersCount">0</h4>
+            <a asp-controller="Members" asp-action="Index"
+               class="text-decoration-none d-block h-100">
+
+                <div class="card bg-secondary border-0 shadow-sm stat-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-circle bg-primary text-white me-3 d-flex align-items-center justify-content-center">
+                            <i class="fa fa-users"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 text-light small text-uppercase">Total Members</p>
+                            <h4 class="mb-0 text-white fw-semibold count-up"
+                                data-target="@ViewBag.MembersCount">
+                                0
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+            </a>
         </div>
 
         <!-- Total Subscriptions -->
         <div class="col-12 col-md-6 col-xl-4">
-            <div class="card bg-secondary border-0 shadow-sm stat-card">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-circle bg-success text-white me-3 d-flex align-items-center justify-content-center">
-                        <i class="fa fa-id-card"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <p class="mb-1 text-light small text-uppercase">Total Subscriptions</p>
-                        <h4 class="mb-0 text-white fw-semibold count-up" data-target="@ViewBag.subs">0</h4>
+            <a asp-controller="Admins" asp-action="Report"
+               class="text-decoration-none d-block h-100">
+
+                <div class="card bg-secondary border-0 shadow-sm stat-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-circle bg-success text-white me-3 d-flex align-items-center justify-content-center">
+                            <i class="fa fa-id-card"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 text-light small text-uppercase">Total Subscriptions</p>
+                            <h4 class="mb-0 text-white fw-semibold count-up"
+                                data-target="@ViewBag.subs">
+                                0
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+            </a>
         </div>
 
         <!-- Total Trainers -->
         <div class="col-12 col-md-6 col-xl-4">
-            <div class="card bg-secondary border-0 shadow-sm stat-card">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-circle bg-info text-white me-3 d-flex align-items-center justify-content-center">
-                        <i class="fa fa-user-md"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <p class="mb-1 text-light small text-uppercase">Total Trainers</p>
-                        <h4 class="mb-0 text-white fw-semibold count-up" data-target="@ViewBag.tCount">0</h4>
+            <a asp-controller="Trainers" asp-action="Index"
+               class="text-decoration-none d-block h-100">
+
+                <div class="card bg-secondary border-0 shadow-sm stat-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-circle bg-info text-white me-3 d-flex align-items-center justify-content-center">
+                            <i class="fa fa-user-md"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 text-light small text-uppercase">Total Trainers</p>
+                            <h4 class="mb-0 text-white fw-semibold count-up"
+                                data-target="@ViewBag.tCount">
+                                0
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+            </a>
         </div>
 
         <!-- Total Revenue -->
-        <div class="col-12 col-md-6 col-xl-4">
-            <div class="card bg-secondary border-0 shadow-sm stat-card">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-circle bg-warning text-dark me-3 d-flex align-items-center justify-content-center">
-                        <i class="fa fa-money"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <p class="mb-1 text-light small text-uppercase">Total Revenue</p>
-                        <h4 class="mb-0 text-white fw-semibold count-up" data-target="@ViewBag.TotalRevenue">0</h4>
+        <div class="col-12 col-md-6 col-xl-4 text-decoration-none d-block h-100">
+              
+
+                <div class="card bg-secondary border-0 shadow-sm stat-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-circle bg-warning text-dark me-3 d-flex align-items-center justify-content-center">
+                            <i class="fa fa-money"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 text-light small text-uppercase">Total Revenue</p>
+                            <h4 class="mb-0 text-white fw-semibold count-up"
+                                data-target="@ViewBag.TotalRevenue">
+                                0
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+
         </div>
 
         <!-- Pending Testimonials -->
         <div class="col-12 col-md-6 col-xl-4">
-            <div class="card bg-secondary border-0 shadow-sm stat-card">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-circle bg-danger text-white me-3 d-flex align-items-center justify-content-center">
-                        <i class="fa fa-comments"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <p class="mb-1 text-light small text-uppercase">Pending Testimonials</p>
-                        <h4 class="mb-0 text-white fw-semibold count-up" data-target="@ViewBag.TestimonialsCount">0</h4>
+            <a asp-controller="Admins" asp-action="ManageTestimonials"
+               class="text-decoration-none d-block h-100">
+
+                <div class="card bg-secondary border-0 shadow-sm stat-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-circle bg-danger text-white me-3 d-flex align-items-center justify-content-center">
+                            <i class="fa fa-comments"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 text-light small text-uppercase">Pending Testimonials</p>
+                            <h4 class="mb-0 text-white fw-semibold count-up"
+                                data-target="@ViewBag.TestimonialsCount">
+                                0
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+            </a>
         </div>
 
         <!-- Workout Plans -->
-        <div class="col-12 col-md-6 col-xl-4">
-            <div class="card bg-secondary border-0 shadow-sm stat-card">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-circle bg-dark text-danger border border-danger me-3 d-flex align-items-center justify-content-center">
-                        <i class="fa fa-heartbeat"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <p class="mb-1 text-light small text-uppercase">Workout Plans</p>
-                        <h4 class="mb-0 text-white fw-semibold count-up" data-target="@ViewBag.WorkoutCount ">0</h4>
+        <div class="col-12 col-md-6 col-xl-4 text-decoration-none d-block h-100">
+             
+
+                <div class="card bg-secondary border-0 shadow-sm stat-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-circle bg-dark text-danger border border-danger me-3 d-flex align-items-center justify-content-center">
+                            <i class="fa fa-heartbeat"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 text-light small text-uppercase">Workout Plans</p>
+                            <h4 class="mb-0 text-white fw-semibold count-up"
+                                data-target="@ViewBag.WorkoutCount">
+                                0
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+
         </div>
 
     </div>
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const counters = document.querySelectorAll(".count-up");

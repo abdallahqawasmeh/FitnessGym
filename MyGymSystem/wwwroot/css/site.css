@@ -18,5 +18,29 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 0;
 }
+
+
+
+
+.who-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 14px;
+}
+
+    .who-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    }
+
+
+.feature-card {
+    border-radius: 14px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+    .feature-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    }

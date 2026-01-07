@@ -16,14 +16,31 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
+          <style>
+        /* ADMIN NAVBAR FIX */
+        .admin-nav .navbar-nav .nav-link {
+            padding: .45rem .65rem; /* smaller horizontal spacing */
+            font-size: .95rem; /* smaller text */
+            white-space: nowrap; /* stop breaking into 2 lines */
+        }
 
+        .admin-nav .dropdown-menu {
+            min-width: 220px;
+        }
+
+        .admin-nav .navbar-brand {
+            font-size: 1.15rem;
+            white-space: nowrap;
+        }
+
+          </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
     <header>
 
 
-        <nav class="navbar navbar-expand-lg bg-primary bg-primary">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark admin-nav">
             <div class="container">
 
                 <a class="navbar-brand fw-semibold" asp-action="Index" asp-controller="Admins">Dashboard</a>
@@ -33,8 +50,8 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse justify-content-center" id="navbarColor01">
-                    <ul class="navbar-nav mb-2 mb-lg-0">
+                <div class="collapse navbar-collapse" id="navbarColor01">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
 
 
@@ -88,6 +105,49 @@
                             <a class="nav-link  active" role="button" aria-expanded="false" asp-action="ManageTestimonials" asp-controller="Admins"> <i class="fa fa-laptop me-2"></i>Testimonials</a>
                         </li>
 
+                        <!-- ✅ Content Management (CMS) Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle active" id="cmsDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-pencil-square-o me-2"></i>Content
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="cmsDropdown">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="ContentPages" asp-action="EditHome">
+                                        <i class="fa fa-home me-2"></i>Home Page
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="ContentPages" asp-action="EditAbout">
+                                        <i class="fa fa-info-circle me-2"></i>About Page
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="ContentPages" asp-action="EditContact">
+                                        <i class="fa fa-envelope-o me-2"></i>Contact Page
+                                    </a>
+                                </li>
+
+                                <li><hr class="dropdown-divider"></li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-controller="ContentPages" asp-action="EditPlansPage">
+                                        <i class="fa fa-id-card-o me-2"></i>Plans Page
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="ContentPages" asp-action="EditTrainersPage">
+                                        <i class="fa fa-users me-2"></i>Trainers Page
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="ContentPages" asp-action="EditTestimonialsPage">
+                                        <i class="fa fa-commenting-o me-2"></i>Testimonials Page
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
 
                         <!-- More Dropdown -->
@@ -114,7 +174,26 @@
                             </ul>
                         </li>
 
+
                     </ul>
+                    @if (ViewData["ad"] != null)
+                    {
+                        <div class="d-flex align-items-center ms-auto">
+                        <a class="d-flex align-items-center text-decoration-none text-white"
+                           asp-action="Edit"
+                           asp-controller="Admins"
+                           asp-route-id="@ViewData["ad"]">
+                            <img src="@Url.Content(
+                              ViewData["AdminImage"] != null
+                                  ? $"~/Images/{ViewData["AdminImage"]}"
+                                  : "~/Images/default.jpg")"
+                                 alt="Profile"
+                                 class="rounded-circle me-2"
+                                 style="width:32px;height:32px;object-fit:cover;" />
+                            <span>@(ViewData["name"] ?? "Admin")</span>
+                        </a>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
@@ -136,7 +215,7 @@
 
 
 
-
+@* 
     <footer class="text-center text-lg-start text-white mt-auto" style="background-color:steelblue;">
         <div class="container p-4 pb-0">
             <section class="">
@@ -173,7 +252,7 @@
                 <a class="text-white fw-bold text-decoration-none" href="#">MyCompany.com</a>
             </div>
         </div>
-    </footer>
+    </footer> *@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 

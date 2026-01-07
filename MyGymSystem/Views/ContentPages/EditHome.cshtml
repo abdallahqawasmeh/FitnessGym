@@ -1,0 +1,281 @@
+﻿@model MyGymSystem.Models.Homepage
+
+@{
+    ViewData["Title"] = "Edit Home Page";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    string ImgOrDefault(string? path)
+    {
+        return Url.Content(!string.IsNullOrWhiteSpace(path) ? $"~/Images/{path}" : "~/Images/default.jpg");
+    }
+}
+
+<section class="py-4">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Home Page Content</h2>
+                <p class="text-muted mb-0">Update hero content and slider images. All fields are optional.</p>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a asp-controller="Admins" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <button type="submit" form="homeForm" class="btn btn-primary">
+                    <i class="bi bi-check2-circle"></i> Save Changes
+                </button>
+            </div>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <div>@TempData["Success"]</div>
+            </div>
+        }
+
+        <div class="row g-4">
+
+            <!-- LEFT: FORM -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+
+                        <form id="homeForm" asp-action="EditHome" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                            <!-- key -->
+                            <input type="hidden" asp-for="Homepageid" />
+
+                            <!-- =========================
+                                 HERO / CTA
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-stars me-2 text-primary"></i>Hero / CTA
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="HeroTitle" class="form-label">Hero Title</label>
+                                <input asp-for="HeroTitle" class="form-control" placeholder="Example: Transform Your Body Today" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="HeroSubtitle" class="form-label">Hero Subtitle</label>
+                                <textarea asp-for="HeroSubtitle" class="form-control" rows="2" placeholder="Short intro under the title..."></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="HeroButtonText" class="form-label">Button Text</label>
+                                    <input asp-for="HeroButtonText" class="form-control" placeholder="Example: Explore Plans" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="HeroButtonUrl" class="form-label">Button URL</label>
+                                    <input asp-for="HeroButtonUrl" class="form-control" placeholder="Example: /Home/Plans" />
+                                    <div class="form-text">Use a relative link like: <code>/Home/Plans</code></div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- =========================
+                                 WELCOME + FEATURED
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-megaphone me-2 text-success"></i>Welcome & Featured Content
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Welcomemessage" class="form-label">Welcome Message</label>
+                                <textarea asp-for="Welcomemessage" class="form-control" rows="2" placeholder="Welcome message shown on home..."></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Featuredcontent" class="form-label">Featured Content</label>
+                                <textarea asp-for="Featuredcontent" class="form-control" rows="3" placeholder="Featured section text..."></textarea>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- =========================
+                                 SLIDER IMAGES
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-images me-2 text-warning"></i>Slider Images (3)
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="alert alert-info small mb-3">
+                                <i class="bi bi-info-circle me-1"></i>
+                                If you don’t upload a new image, the previous one will stay.
+                            </div>
+
+                            <!-- Old single slider (keep as-is) -->
+                            <div class="mb-3">
+                                <label class="form-label">Legacy Slider Image (Sliderimagepath)</label>
+                                <input asp-for="Sliderimage" type="file" class="form-control" accept="image/*" />
+                                <div class="form-text">This is your existing single slider image. Optional.</div>
+                            </div>
+
+                            <!-- Slider 1 -->
+                            <div class="row g-3 align-items-end mb-2">
+                                <div class="col-md-7">
+                                    <label class="form-label">Slider Image 1</label>
+                                    <input asp-for="SliderImage1" type="file" class="form-control" accept="image/*" />
+                                </div>
+                                <div class="col-md-5">
+                                    <label asp-for="SliderCaption1" class="form-label">Caption 1</label>
+                                    <input asp-for="SliderCaption1" class="form-control" placeholder="Optional caption" />
+                                </div>
+                            </div>
+
+                            <!-- Slider 2 -->
+                            <div class="row g-3 align-items-end mb-2">
+                                <div class="col-md-7">
+                                    <label class="form-label">Slider Image 2</label>
+                                    <input asp-for="SliderImage2" type="file" class="form-control" accept="image/*" />
+                                </div>
+                                <div class="col-md-5">
+                                    <label asp-for="SliderCaption2" class="form-label">Caption 2</label>
+                                    <input asp-for="SliderCaption2" class="form-control" placeholder="Optional caption" />
+                                </div>
+                            </div>
+
+                            <!-- Slider 3 -->
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-7">
+                                    <label class="form-label">Slider Image 3</label>
+                                    <input asp-for="SliderImage3" type="file" class="form-control" accept="image/*" />
+                                </div>
+                                <div class="col-md-5">
+                                    <label asp-for="SliderCaption3" class="form-label">Caption 3</label>
+                                    <input asp-for="SliderCaption3" class="form-control" placeholder="Optional caption" />
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    @if (Model.Lastupdated != null)
+                                    {
+                                        <span><i class="bi bi-clock me-1"></i>Last updated: @Model.Lastupdated</span>
+                                    }
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check2-circle"></i> Save
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: LIVE PREVIEW -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-semibold mb-3">
+                            <i class="bi bi-eye me-2 text-primary"></i>Preview
+                        </h5>
+
+                        <!-- Hero preview -->
+                        <div class="p-4 rounded border bg-light mb-4">
+                            <div class="text-uppercase small text-muted mb-2">Hero</div>
+                            <h4 class="fw-bold mb-2">@(!string.IsNullOrWhiteSpace(Model.HeroTitle) ? Model.HeroTitle : "Your Hero Title")</h4>
+                            <p class="text-muted mb-3">@(!string.IsNullOrWhiteSpace(Model.HeroSubtitle) ? Model.HeroSubtitle : "Your hero subtitle will appear here.")</p>
+
+                            <a class="btn btn-sm btn-dark"
+                               href="@(string.IsNullOrWhiteSpace(Model.HeroButtonUrl) ? "#" : Model.HeroButtonUrl)">
+                                @(!string.IsNullOrWhiteSpace(Model.HeroButtonText) ? Model.HeroButtonText : "Button")
+                            </a>
+                        </div>
+
+                        <!-- Slider previews -->
+                        <div class="text-uppercase small text-muted mb-2">Slider Images</div>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="border rounded overflow-hidden">
+                                    <img src="@ImgOrDefault(Model.Sliderimagepath1)" style="width:100%; height:170px; object-fit:cover;" />
+                                    <div class="p-2 small text-muted">
+                                        <i class="bi bi-image me-1"></i> Slider 1
+                                        @if (!string.IsNullOrWhiteSpace(Model.SliderCaption1))
+                                        {
+                                            <span>— @Model.SliderCaption1</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="border rounded overflow-hidden">
+                                    <img src="@ImgOrDefault(Model.Sliderimagepath2)" style="width:100%; height:170px; object-fit:cover;" />
+                                    <div class="p-2 small text-muted">
+                                        <i class="bi bi-image me-1"></i> Slider 2
+                                        @if (!string.IsNullOrWhiteSpace(Model.SliderCaption2))
+                                        {
+                                            <span>— @Model.SliderCaption2</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="border rounded overflow-hidden">
+                                    <img src="@ImgOrDefault(Model.Sliderimagepath3)" style="width:100%; height:170px; object-fit:cover;" />
+                                    <div class="p-2 small text-muted">
+                                        <i class="bi bi-image me-1"></i> Slider 3
+                                        @if (!string.IsNullOrWhiteSpace(Model.SliderCaption3))
+                                        {
+                                            <span>— @Model.SliderCaption3</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Legacy single slider preview -->
+                        <div class="mt-4">
+                            <div class="text-uppercase small text-muted mb-2">Legacy Slider (Sliderimagepath)</div>
+                            <div class="border rounded overflow-hidden">
+                                <img src="@ImgOrDefault(Model.Sliderimagepath)" style="width:100%; height:170px; object-fit:cover;" />
+                                <div class="p-2 small text-muted"><i class="bi bi-image me-1"></i> Legacy Slider Image</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Quick tips -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h6 class="fw-semibold mb-2"><i class="bi bi-lightbulb me-2 text-warning"></i>Tips</h6>
+                        <ul class="small text-muted mb-0">
+                            <li>Use images with similar aspect ratio for a clean slider.</li>
+                            <li>Keep captions short (3–8 words).</li>
+                            <li>Hero button URL should be a valid route like <code>/Home/Plans</code>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>

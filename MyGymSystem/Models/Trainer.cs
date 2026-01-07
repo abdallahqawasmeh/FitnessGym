@@ -18,6 +18,9 @@ namespace MyGymSystem.Models
         public virtual ICollection<Userlogin> Userlogins { get; set; } = new List<Userlogin>();
         public virtual ICollection<Workoutplan> Workoutplans { get; set; } = new List<Workoutplan>();
 		public virtual ICollection<MemberTrainer> MemberTrainers { get; set; } = new List<MemberTrainer>();
+        //NEW   
 
-	}
+        public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
+
+    }
 }

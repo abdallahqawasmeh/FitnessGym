@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyGymSystem.Models
 {
@@ -7,12 +8,17 @@ namespace MyGymSystem.Models
         [Key]
         public long Workoutplanid { get; set; }
 
-        public long? Trainerid { get; set; }
-        public virtual Trainer? Trainer { get; set; }
+        public long Trainerid { get; set; }
+        
+        
+        [ValidateNever]
+        public virtual Trainer Trainer { get; set; }=null!;
 
         // NEW: one plan targets one member (customized)
         public long Memberid { get; set; }
+        [ValidateNever]
         public virtual Member Member { get; set; } = null!;
+
 
         public string Planname { get; set; } = null!;
         public string? Plandescription { get; set; }
@@ -21,6 +27,7 @@ namespace MyGymSystem.Models
         public string? Routinedetails { get; set; }
         public string? Schedule { get; set; }
         public string? Goal { get; set; }
-        public bool? Status { get; set; }
+        public bool Status { get; set; } = true;
+    
     }
 }

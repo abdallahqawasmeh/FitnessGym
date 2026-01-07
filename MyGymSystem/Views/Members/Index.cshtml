@@ -68,9 +68,9 @@
                     </td>
 
             <td>
-                <a  asp-action="EditMember" asp-controller="Admins" asp-route-id="@item.Memberid">Edit</a> |
+                        <a asp-action="EditMember" asp-controller="Admins" asp-route-id="@item.Memberid">Edit</a> |
                 <a asp-action="MemberDetails" asp-controller="Admins" asp-route-id="@item.Memberid">Details</a> |
-                        <a asp-action="Delete" asp-controller="Admins" asp-route-id="@item.Memberid">Delete</a>
+                        <a asp-action="Delete" asp-controller="Members" asp-route-id="@item.Memberid">Delete</a>
             </td>
         </tr>
 }

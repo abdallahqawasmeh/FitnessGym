@@ -21,5 +21,15 @@ namespace MyGymSystem.Models
         public virtual ICollection<Membershipplan> Membershipplans { get; set; } = new List<Membershipplan>();
         public virtual ICollection<Testimonial> Testimonials { get; set; } = new List<Testimonial>();
         public virtual ICollection<Userlogin> Userlogins { get; set; } = new List<Userlogin>();
+
+        public virtual ICollection<Trainerspage> Trainerspages { get; set; } = new List<Trainerspage>();
+        public virtual ICollection<Membershipplanspage> Membershipplanspages { get; set; } = new List<Membershipplanspage>();
+        public virtual ICollection<Testimonialspage> Testimonialspages { get; set; } = new List<Testimonialspage>();
+
+
     }
+
+
+
+
 }

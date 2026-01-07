@@ -25,13 +25,28 @@ namespace MyGymSystem.Controllers
         }
 
 
+        private void FillLayoutData()
+        {
+            ViewData["name"] = HttpContext.Session.GetString("AdminName");
+            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+
+            var AdminId = HttpContext.Session.GetInt32("AdminId");
+            if (AdminId != null)
+            {
+                var admin = _context.Admins.FirstOrDefault(m => m.Adminid == AdminId);
+                if (admin != null)
+                {
+                    ViewData["AdminImage"] = admin.Imagepath;
+                }
+            }
+        }
 
 
         [HttpGet]
         public IActionResult Report()
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
+
 
             var subscriptions = _context.Subscriptions
                 .Include(s => s.Member)
@@ -80,8 +95,7 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Report(DateTime? startDate, DateTime? endDate)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
             if (startDate == null || endDate == null)
             {
@@ -140,8 +154,7 @@ namespace MyGymSystem.Controllers
         // GET: Admins
         public IActionResult Index()
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
             ViewBag.MembersCount = _context.Members.Count();
             ViewBag.TotalRevenue = _context.Membershipplans.Sum(x => x.Price);
@@ -158,6 +171,8 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ApproveTestimonial(long testimonialId)
         {
+            FillLayoutData();
+
             var testimonial = _context.Testimonials.FirstOrDefault(t => t.Testimonialid == testimonialId);
             if (testimonial != null)
             {
@@ -172,6 +187,8 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult RejectTestimonial(long testimonialId)
         {
+            FillLayoutData();
+
             var testimonial = _context.Testimonials.FirstOrDefault(t => t.Testimonialid == testimonialId);
             if (testimonial != null)
             {
@@ -184,6 +201,8 @@ namespace MyGymSystem.Controllers
 
         public IActionResult ManageTestimonials()
         {
+            FillLayoutData();
+
             ViewData["name"] = HttpContext.Session.GetString("AdminName");
             ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
 
@@ -227,6 +246,8 @@ namespace MyGymSystem.Controllers
         // GET: Admins/Details/5
         public async Task<IActionResult> Details(long? id)
         {
+            FillLayoutData();
+
             ViewData["name"] = HttpContext.Session.GetString("AdminName");
             ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
 
@@ -264,26 +285,28 @@ namespace MyGymSystem.Controllers
         // GET: Admins/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
+          
             if (id == null)
             {
                 return NotFound();
             }
-            var login = await _context.Userlogins.FirstOrDefaultAsync(u => u.Adminid == id);
             var admin = await _context.Admins.FindAsync(id);
             if (admin == null)
             {
                 return NotFound();
             }
-            var vm = new MyGymSystem.Join.DetailsAdminWithUserLogin
-            {
-                admin = admin,
-                userlogin = login ?? new Userlogin()
-            };
-         
-            return View(vm);
+
+            // Get user login for this member
+            var login = await _context.Userlogins.FirstOrDefaultAsync(u => u.Adminid == id);
+
+            // Pass to view (for display / editing)
+            ViewBag.Username = login?.Username;
+            ViewBag.Password = login?.Passwordhash; // (later you should hash, but this matches your code now)
+
+
+            return View(admin);
         }
 
         // POST: Admins/Edit/5
@@ -291,81 +314,61 @@ namespace MyGymSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind( "Adminid,Firstname,Lastname,Email,Phonenumber,Dateofbirth,Imagepath,ImageFilee", Prefix = "admin")] Admin admin, [FromForm(Name = "userlogin.Username")] string? Username,
-    [FromForm(Name = "userlogin.Passwordhash")] string? Password)
+        public async Task<IActionResult> Edit(
+       long id,
+       [Bind("Adminid,Firstname,Lastname,Email,Phonenumber,Dateofbirth,Imagepath,ImageFilee")] Admin admin,
+       string? Username,
+       string? Password)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
-            if (id != admin.Adminid)
+            if (id != admin.Adminid) return NotFound();
+            if (!ModelState.IsValid) return View(admin);
+
+            // ✅ Load the tracked entity (ONLY ONE instance tracked)
+            var dbAdmin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid == id);
+            if (dbAdmin == null) return NotFound();
+
+            // ✅ Update scalar fields
+            dbAdmin.Firstname = admin.Firstname;
+            dbAdmin.Lastname = admin.Lastname;
+            dbAdmin.Email = admin.Email;
+            dbAdmin.Phonenumber = admin.Phonenumber;
+            dbAdmin.Dateofbirth = admin.Dateofbirth;
+
+            // ✅ Image update only if new file chosen
+            if (admin.ImageFilee != null && admin.ImageFilee.Length > 0)
             {
-                return NotFound();
+                string wwwrootpath = _webHostEnvironment.WebRootPath;
+                string fileName = Guid.NewGuid() + "_" + admin.ImageFilee.FileName;
+                string path = Path.Combine(wwwrootpath, "Images", fileName);
+
+                using var fileStream = new FileStream(path, FileMode.Create);
+                await admin.ImageFilee.CopyToAsync(fileStream);
+
+                dbAdmin.Imagepath = fileName;
+            }
+            // else: keep existing dbAdmin.Imagepath as-is
+
+            // ✅ Update login info (no extra Update() needed if tracked)
+            var userLogin = await _context.Userlogins.FirstOrDefaultAsync(u => u.Adminid == id);
+            if (userLogin != null)
+            {
+                if (!string.IsNullOrWhiteSpace(Username))
+                    userLogin.Username = Username;
+
+                if (!string.IsNullOrWhiteSpace(Password))
+                    userLogin.Passwordhash = Password; // (hash it if you use hashing)
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-
-
-
-                    if (admin.ImageFilee != null)
-                    {
-                        string wwwrootpath = _webHostEnvironment.WebRootPath;
-
-                        //Encrypt for the image name ex:fswe21212w_pizza.png
-                        string FileName = Guid.NewGuid().ToString() + "_" + admin.ImageFilee.FileName;
-
-                        string path = Path.Combine(wwwrootpath + "/Images/", FileName);
-
-                        using (var fileStream = new FileStream(path, FileMode.Create))
-                        {
-
-                            await admin.ImageFilee.CopyToAsync(fileStream);
-                        }
-                        admin.Imagepath = FileName;
-                    }
-
-                    _context.Update(admin);
-                    if (admin.ImageFilee == null)
-                    {
-                        _context.Entry(admin).Property(a => a.Imagepath).IsModified = false;
-                    }
-                    await _context.SaveChangesAsync();
-
-                    var userLogin = _context.Userlogins.FirstOrDefault(u => u.Adminid == admin.Adminid );
-
-                    if (userLogin != null) {
-                        userLogin.Username = Username?? userLogin.Username;
-                        userLogin.Passwordhash = Password?? userLogin.Passwordhash;
-                        _context.Update(userLogin);
-                    }
-                    await _context.SaveChangesAsync(); // <-- you were missing this after updating userLogin
-
-
-
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AdminExists(admin.Adminid))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(admin);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Edit),new {id= admin.Adminid  });
         }
 
         // GET: Admins/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
             if (id == null)
             {
@@ -387,6 +390,8 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
+            FillLayoutData();
+
             var admin = await _context.Admins.FindAsync(id);
             if (admin != null)
             {
@@ -428,9 +433,9 @@ namespace MyGymSystem.Controllers
         // GET: Members/Details/5
         public async Task<IActionResult> MemberDetails(long? id)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
+            
             if (id == null || _context.Members == null)
             {
                 return NotFound();
@@ -451,8 +456,7 @@ namespace MyGymSystem.Controllers
         // GET: Members/Edit/5
         public async Task<IActionResult> EditMember(long? id)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
             if (id == null || _context.Members == null)
             {
@@ -479,8 +483,7 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditMember(long id, [Bind("Memberid,Firstname,Lastname,Email,Phonenumber,Dateofbirth,Fitnessgoal,Imagepath,ImageFile")] Member member)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
             if (id != member.Memberid)
             {
@@ -491,7 +494,18 @@ namespace MyGymSystem.Controllers
             {
                 try
                 {
-                    if (member.ImageFile != null)
+                    var dbMember = await _context.Members.FirstOrDefaultAsync(u => u.Memberid == member.Memberid);
+                    if (dbMember == null) return NotFound();
+
+                    dbMember.Firstname = dbMember.Firstname??member.Firstname;
+                    dbMember.Lastname = dbMember.Lastname?? member.Lastname;
+                    dbMember.Email = dbMember.Email ?? member.Email;
+                    dbMember.Phonenumber = dbMember.Phonenumber??member.Phonenumber;
+                    dbMember.Dateofbirth = dbMember.Dateofbirth ?? member.Dateofbirth;
+                    dbMember.Fitnessgoal = dbMember.Fitnessgoal??member.Fitnessgoal;
+
+                  
+                    if (member.ImageFile != null && member.ImageFile.Length > 0)
                     {
 
                         string wwwrootpath = _webHostEnvironment.WebRootPath;
@@ -501,18 +515,15 @@ namespace MyGymSystem.Controllers
 
                         string path = Path.Combine(wwwrootpath + "/Images/", FileName);
 
-                        using (var fileStream = new FileStream(path, FileMode.Create))
-                        {
-
+                        using var fileStream = new FileStream(path, FileMode.Create);
                             await member.ImageFile.CopyToAsync(fileStream);
-                        }
-                        member.Imagepath = FileName;
+                        
+                        dbMember.Imagepath = FileName;
                     }
 
 
 
 
-                        _context.Update(member);
                         await _context.SaveChangesAsync();
                    
 
@@ -529,9 +540,10 @@ namespace MyGymSystem.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(EditMember), new { id = member.Memberid });
+
             }
-            return View(member);
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -570,8 +582,7 @@ namespace MyGymSystem.Controllers
 
         public async Task<IActionResult> DetailTrainer(long? id)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
 
             if (id == null || _context.Trainers == null)
@@ -594,8 +605,7 @@ namespace MyGymSystem.Controllers
         // GET: Trainers/Edit/5
         public async Task<IActionResult> EditTrainer(long? id)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
             if (id == null || _context.Trainers == null)
             {
@@ -617,8 +627,7 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditTrainer(long id, [Bind("Trainerid,Firstname,Lastname,Email,Phonenumber,Specialization,Imagepath,ImageFilet")] Trainer trainer)
         {
-            ViewData["name"] = HttpContext.Session.GetString("AdminName");
-            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+            FillLayoutData();
 
             if (id != trainer.Trainerid)
             {
@@ -629,7 +638,22 @@ namespace MyGymSystem.Controllers
             {
                 try
                 {
-                    if (trainer.ImageFilet != null)
+
+
+                    var dbTrainer = await _context.Trainers.FirstOrDefaultAsync(x => x.Trainerid == trainer.Trainerid);
+                    if (dbTrainer == null)
+                        return NotFound();
+
+
+                    dbTrainer.Firstname = trainer.Firstname ?? dbTrainer.Firstname;
+                    dbTrainer.Lastname = trainer.Lastname ?? dbTrainer.Lastname;
+
+                    dbTrainer.Email = trainer.Email ?? dbTrainer.Email;
+
+                    dbTrainer.Phonenumber = trainer.Phonenumber ?? dbTrainer.Phonenumber;
+                    dbTrainer.Specialization = trainer.Specialization ?? dbTrainer.Specialization;
+
+                    if (trainer.ImageFilet != null && trainer.ImageFilet.Length > 0)
                     {
 
                         string wwwrootpath = _webHostEnvironment.WebRootPath;
@@ -639,18 +663,15 @@ namespace MyGymSystem.Controllers
 
                         string path = Path.Combine(wwwrootpath + "/Images/", FileName);
 
-                        using (var fileStream = new FileStream(path, FileMode.Create))
-                        {
-
+                        using var fileStream = new FileStream(path, FileMode.Create);
                             await trainer.ImageFilet.CopyToAsync(fileStream);
-                        }
-                        trainer.Imagepath = FileName;
+                        
+                        dbTrainer.Imagepath = FileName;
 
                     }
 
 
 
-                    _context.Update(trainer);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -664,9 +685,9 @@ namespace MyGymSystem.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(EditTrainer),new {id = trainer.Trainerid});
             }
-            return View(trainer);
+            return View(nameof(Index));
         }
 
 

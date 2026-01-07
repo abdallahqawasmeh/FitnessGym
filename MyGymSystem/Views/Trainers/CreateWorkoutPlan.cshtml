@@ -1,0 +1,65 @@
+﻿@model MyGymSystem.Models.Workoutplan
+
+@{
+    Layout = "~/Views/Shared/_TrainerLayout.cshtml";
+}
+
+<h2>Create Workout Plan</h2>
+
+<form asp-action="CreateWorkoutPlan" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- IMPORTANT: keep these hidden so the plan is linked correctly -->
+    <input type="hidden" asp-for="Memberid" />
+    <input type="hidden" asp-for="Trainerid" />
+
+    <div class="mb-3">
+        <label class="form-label">Plan Name</label>
+        <input asp-for="Planname" class="form-control" />
+        <span asp-validation-for="Planname" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea asp-for="Plandescription" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Start Date</label>
+            <input asp-for="Startdate" type="date" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">End Date</label>
+            <input asp-for="Enddate" type="date" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Routine Details</label>
+        <textarea asp-for="Routinedetails" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Schedule</label>
+        <input asp-for="Schedule" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Goal</label>
+        <input asp-for="Goal" class="form-control" />
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="Status" class="form-check-input" type="checkbox" />
+        <label class="form-check-label">Active</label>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+
+    <a asp-action="MyMembers" class="btn btn-outline-secondary ms-2">Back</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

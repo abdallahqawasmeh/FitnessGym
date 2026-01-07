@@ -60,7 +60,7 @@ namespace MyGymSystem.Controllers
 
         [HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Pay(long? planId,long? trainerId, [Bind("Paymentid,Paymentmethod,Paymentstatus,Externaltransactionid")] Payment payment)
+		public async Task<IActionResult> Pay(long planId,long? trainerId, [Bind("Paymentid,Paymentmethod,Paymentstatus,Externaltransactionid")] Payment payment)
 		{
             ModelState.Remove(nameof(Payment.Amountpaid));
             ModelState.Remove(nameof(Payment.Paymentdate));
@@ -146,14 +146,15 @@ namespace MyGymSystem.Controllers
 					Paymentid = payment.Paymentid,
 					Memberid = memberId.Value,
 					Planid = planId,
-					Startdate = DateTime.Now,
+                    Trainerid = trainerId,
+                    Startdate = DateTime.Now,
 					Enddate = DateTime.Now.AddMonths(plan.Durationmonths),
 					Status = true,
 					Createdat = DateTime.Now
                 };
 
 				_context.Subscriptions.Add(subscription);
-
+                await _context.SaveChangesAsync();
                 // Personal: deactivate previous active trainer and assign new
                 if (isPersonal && trainer is not null)
                 {

@@ -29,7 +29,21 @@ namespace MyGymSystem.Controllers
         }
 
 
+        private void FillLayoutDataAdmin()
+        {
+            ViewData["name"] = HttpContext.Session.GetString("AdminName");
+            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
 
+            var AdminId = HttpContext.Session.GetInt32("AdminId");
+            if (AdminId != null)
+            {
+                var admin = _context.Admins.FirstOrDefault(m => m.Adminid == AdminId);
+                if (admin != null)
+                {
+                    ViewData["AdminImage"] = admin.Imagepath;
+                }
+            }
+        }
 
         private void FillLayoutData()
         {
@@ -54,6 +68,8 @@ namespace MyGymSystem.Controllers
         // GET: Members
         public async Task<IActionResult> Index()
         {
+            FillLayoutDataAdmin();
+
             return View(await _context.Members.ToListAsync());
         }
 
@@ -92,6 +108,7 @@ namespace MyGymSystem.Controllers
         // GET: Members/Create
         public IActionResult Create()
         {
+            FillLayoutDataAdmin();
             return View();
         }
 
@@ -102,8 +119,7 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Memberid,Firstname,Lastname,Email,Phonenumber,Dateofbirth,Fitnessgoal,Imagepath,ImageFile")] Member member, string Username, string Password)
         {
-            ViewData["name"] = HttpContext.Session.GetString("MName");
-            ViewData["memid"] = HttpContext.Session.GetInt32("MNId");
+            FillLayoutDataAdmin();
 
             if (ModelState.IsValid)
             {
@@ -282,8 +298,8 @@ namespace MyGymSystem.Controllers
         // GET: Members/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
-            ViewData["name"] = HttpContext.Session.GetString("MName");
-            ViewData["memid"] = HttpContext.Session.GetInt32("MNId");
+            FillLayoutDataAdmin();
+
 
             if (id == null)
             {
@@ -305,6 +321,8 @@ namespace MyGymSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
+            FillLayoutDataAdmin();
+
             var member = await _context.Members.FindAsync(id);
             if (member != null)
             {

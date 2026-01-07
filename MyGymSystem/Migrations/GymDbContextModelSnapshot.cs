@@ -33,10 +33,16 @@ namespace MyGymSystem.Migrations
                     b.Property<string>("Imagepath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IntroText")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("Lastupdated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Missionstatement")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PageTitle")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Teamdescription")
@@ -44,6 +50,24 @@ namespace MyGymSystem.Migrations
 
                     b.Property<long?>("Updatedbyadminid")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Value1Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value1Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value2Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value2Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value3Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value3Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Visionstatement")
                         .HasColumnType("nvarchar(max)");
@@ -106,10 +130,16 @@ namespace MyGymSystem.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IntroText")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("Lastupdated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Mapembedcode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PageTitle")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phonenumber")
@@ -120,6 +150,9 @@ namespace MyGymSystem.Migrations
 
                     b.Property<long?>("Updatedbyadminid")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("WorkingHours")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Contactuspageid");
 
@@ -139,10 +172,40 @@ namespace MyGymSystem.Migrations
                     b.Property<string>("Featuredcontent")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("HeroButtonText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeroButtonUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeroSubtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeroTitle")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("Lastupdated")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("SliderCaption1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SliderCaption2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SliderCaption3")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Sliderimagepath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sliderimagepath1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sliderimagepath2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sliderimagepath3")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("Updatedbyadminid")
@@ -258,6 +321,9 @@ namespace MyGymSystem.Migrations
                     b.Property<long>("MemberId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("SubscriptionId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("TrainerId")
                         .HasColumnType("bigint");
 
@@ -266,11 +332,13 @@ namespace MyGymSystem.Migrations
 
                     b.HasKey("MemberTrainerId");
 
-                    b.HasIndex("TrainerId");
-
-                    b.HasIndex("MemberId", "IsActive")
+                    b.HasIndex("MemberId")
                         .IsUnique()
                         .HasFilter("[IsActive] = 1");
+
+                    b.HasIndex("SubscriptionId");
+
+                    b.HasIndex("TrainerId");
 
                     b.ToTable("MemberTrainer");
                 });
@@ -323,6 +391,36 @@ namespace MyGymSystem.Migrations
                     b.HasIndex("Createdbyadminid");
 
                     b.ToTable("Membershipplans");
+                });
+
+            modelBuilder.Entity("MyGymSystem.Models.Membershipplanspage", b =>
+                {
+                    b.Property<long>("Membershipplanspageid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Membershipplanspageid"));
+
+                    b.Property<string>("Bannerimagepath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IntroText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Lastupdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PageTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("Updatedbyadminid")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Membershipplanspageid");
+
+                    b.HasIndex("Updatedbyadminid");
+
+                    b.ToTable("Membershipplanspages");
                 });
 
             modelBuilder.Entity("MyGymSystem.Models.Payment", b =>
@@ -387,13 +485,13 @@ namespace MyGymSystem.Migrations
                     b.Property<DateTime>("Enddate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("Memberid")
+                    b.Property<long>("Memberid")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("Paymentid")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("Planid")
+                    b.Property<long>("Planid")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("Startdate")
@@ -401,6 +499,9 @@ namespace MyGymSystem.Migrations
 
                     b.Property<bool?>("Status")
                         .HasColumnType("bit");
+
+                    b.Property<long?>("Trainerid")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Subscriptionid");
 
@@ -417,6 +518,8 @@ namespace MyGymSystem.Migrations
                     b.HasIndex("Planid");
 
                     b.HasIndex("Startdate");
+
+                    b.HasIndex("Trainerid");
 
                     b.ToTable("Subscriptions");
                 });
@@ -457,6 +560,36 @@ namespace MyGymSystem.Migrations
                         });
                 });
 
+            modelBuilder.Entity("MyGymSystem.Models.Testimonialspage", b =>
+                {
+                    b.Property<long>("Testimonialspageid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Testimonialspageid"));
+
+                    b.Property<string>("Bannerimagepath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IntroText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Lastupdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PageTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("Updatedbyadminid")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Testimonialspageid");
+
+                    b.HasIndex("Updatedbyadminid");
+
+                    b.ToTable("Testimonialspages");
+                });
+
             modelBuilder.Entity("MyGymSystem.Models.Trainer", b =>
                 {
                     b.Property<long>("Trainerid")
@@ -489,6 +622,36 @@ namespace MyGymSystem.Migrations
                     b.HasKey("Trainerid");
 
                     b.ToTable("Trainers");
+                });
+
+            modelBuilder.Entity("MyGymSystem.Models.Trainerspage", b =>
+                {
+                    b.Property<long>("Trainerspageid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Trainerspageid"));
+
+                    b.Property<string>("Bannerimagepath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IntroText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Lastupdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PageTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("Updatedbyadminid")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Trainerspageid");
+
+                    b.HasIndex("Updatedbyadminid");
+
+                    b.ToTable("Trainerspages");
                 });
 
             modelBuilder.Entity("MyGymSystem.Models.Userlogin", b =>
@@ -568,10 +731,10 @@ namespace MyGymSystem.Migrations
                     b.Property<DateTime?>("Startdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool?>("Status")
+                    b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<long?>("Trainerid")
+                    b.Property<long>("Trainerid")
                         .HasColumnType("bigint");
 
                     b.HasKey("Workoutplanid");
@@ -637,6 +800,11 @@ namespace MyGymSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MyGymSystem.Models.Subscription", "Subscription")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("MyGymSystem.Models.Trainer", "Trainer")
                         .WithMany("MemberTrainers")
                         .HasForeignKey("TrainerId")
@@ -644,6 +812,8 @@ namespace MyGymSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("Member");
+
+                    b.Navigation("Subscription");
 
                     b.Navigation("Trainer");
                 });
@@ -658,11 +828,23 @@ namespace MyGymSystem.Migrations
                     b.Navigation("Createdbyadmin");
                 });
 
+            modelBuilder.Entity("MyGymSystem.Models.Membershipplanspage", b =>
+                {
+                    b.HasOne("MyGymSystem.Models.Admin", "Updatedbyadmin")
+                        .WithMany("Membershipplanspages")
+                        .HasForeignKey("Updatedbyadminid")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Updatedbyadmin");
+                });
+
             modelBuilder.Entity("MyGymSystem.Models.Subscription", b =>
                 {
                     b.HasOne("MyGymSystem.Models.Member", "Member")
                         .WithMany("Subscriptions")
-                        .HasForeignKey("Memberid");
+                        .HasForeignKey("Memberid")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("MyGymSystem.Models.Payment", "Payment")
                         .WithMany("Subscriptions")
@@ -671,13 +853,22 @@ namespace MyGymSystem.Migrations
 
                     b.HasOne("MyGymSystem.Models.Membershipplan", "Plan")
                         .WithMany("Subscriptions")
-                        .HasForeignKey("Planid");
+                        .HasForeignKey("Planid")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MyGymSystem.Models.Trainer", "Trainer")
+                        .WithMany("Subscriptions")
+                        .HasForeignKey("Trainerid")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Member");
 
                     b.Navigation("Payment");
 
                     b.Navigation("Plan");
+
+                    b.Navigation("Trainer");
                 });
 
             modelBuilder.Entity("MyGymSystem.Models.Testimonial", b =>
@@ -693,6 +884,26 @@ namespace MyGymSystem.Migrations
                     b.Navigation("Approvedbyadmin");
 
                     b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("MyGymSystem.Models.Testimonialspage", b =>
+                {
+                    b.HasOne("MyGymSystem.Models.Admin", "Updatedbyadmin")
+                        .WithMany("Testimonialspages")
+                        .HasForeignKey("Updatedbyadminid")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Updatedbyadmin");
+                });
+
+            modelBuilder.Entity("MyGymSystem.Models.Trainerspage", b =>
+                {
+                    b.HasOne("MyGymSystem.Models.Admin", "Updatedbyadmin")
+                        .WithMany("Trainerspages")
+                        .HasForeignKey("Updatedbyadminid")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Updatedbyadmin");
                 });
 
             modelBuilder.Entity("MyGymSystem.Models.Userlogin", b =>
@@ -733,7 +944,8 @@ namespace MyGymSystem.Migrations
                     b.HasOne("MyGymSystem.Models.Trainer", "Trainer")
                         .WithMany("Workoutplans")
                         .HasForeignKey("Trainerid")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Member");
 
@@ -750,7 +962,13 @@ namespace MyGymSystem.Migrations
 
                     b.Navigation("Membershipplans");
 
+                    b.Navigation("Membershipplanspages");
+
                     b.Navigation("Testimonials");
+
+                    b.Navigation("Testimonialspages");
+
+                    b.Navigation("Trainerspages");
 
                     b.Navigation("Userlogins");
                 });
@@ -790,6 +1008,8 @@ namespace MyGymSystem.Migrations
             modelBuilder.Entity("MyGymSystem.Models.Trainer", b =>
                 {
                     b.Navigation("MemberTrainers");
+
+                    b.Navigation("Subscriptions");
 
                     b.Navigation("Userlogins");
 

@@ -4,9 +4,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0d0d0d; /* Dark background for contrast */
+    /* 🔥 Background image */
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/images/download.jfif') center center / cover no-repeat;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 
 .form {
     display: flex;
@@ -14,7 +16,8 @@
     gap: 10px;
     padding: 2em;
     width: 350px; /* medium width */
-    background-color: #171717;
+    background-color: rgba(23, 23, 23, 0.95); /* slight transparency */
+    backdrop-filter: blur(4px); /* modern glass effect */
     border-radius: 25px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
     transition: .4s ease-in-out;

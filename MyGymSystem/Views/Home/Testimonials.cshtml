@@ -1,14 +1,45 @@
-﻿@model Testimonial
+﻿@model MyGymSystem.Join.TestimonialsVM
 
 @{
     ViewData["Title"] = "Testimonials";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var testimonials = (ViewBag.Testimonials as IEnumerable<Testimonial>)?.ToList() ?? new List<Testimonial>();
 
+    var page = Model?.Page; // CMS row (id=1)
+    var testimonials = Model?.Testimonials?.ToList() ?? new List<Testimonial>();
     var testimonialsCount = testimonials.Count;
-
 }
 
+<!-- ✅ Dynamic Header/Banner (same layout you already have) -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+
+            <!-- Text -->
+            <div class="col-lg-6">
+                <h1 class="fw-bold mb-2">
+                    @(!string.IsNullOrWhiteSpace(page?.PageTitle) ? page!.PageTitle : "Testimonials")
+                </h1>
+
+                <p class="text-muted mb-0">
+                    @(!string.IsNullOrWhiteSpace(page?.IntroText)
+                        ? page!.IntroText
+                        : "Share your experience and see what other members are saying.")
+                </p>
+            </div>
+
+            <!-- Banner -->
+            <div class="col-lg-6 text-center">
+                <img src="@Url.Content(!string.IsNullOrWhiteSpace(page?.Bannerimagepath) ? $"~/Images/{page!.Bannerimagepath}" : "~/Images/default.jpg")"
+                     class="img-fluid rounded shadow-sm"
+                     style="max-height:320px; object-fit:cover; width:100%;"
+                     alt="Testimonials Banner" />
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ✅ Your form section (UNCHANGED) -->
 <section class="py-5">
     <div class="container">
         <div class="row justify-content-center">
@@ -23,19 +54,22 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
                         <form asp-action="SubmitTestimonial" method="post">
+                            @Html.AntiForgeryToken()
+
                             @* Hidden member id *@
-                            <input type="hidden" asp-for="Memberid" />
+                            <input type="hidden" name="Memberid" value="@ViewData["memid"]" />
 
                             @* Validation summary *@
                             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                             <div class="form-group mb-3">
-                                <label asp-for="Feedbacktext" class="form-label">Your Feedback</label>
-                                <textarea asp-for="Feedbacktext"
+                                <label class="form-label">Your Feedback</label>
+                                <textarea name="Feedbacktext"
                                           class="form-control"
                                           rows="4"
                                           placeholder="Tell us what you liked, what helped you, or what we can improve."></textarea>
-                                <span asp-validation-for="Feedbacktext" class="text-danger"></span>
+
+                                <span class="text-danger">@Html.ValidationMessage("Feedbacktext")</span>
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-block w-100">
@@ -55,12 +89,9 @@
     </div>
 </section>
 
-
-
 <!-- ===================== TESTIMONIALS (SLIDER) ===================== -->
 <section class="py-5" id="testimonials">
     <div class="container" style="max-width: 850px;">
-        <!-- Smaller width -->
         <div class="row">
             <div class="col-lg-12 text-center mb-4">
                 <h2 class="fw-bold">What Our Clients Say</h2>
@@ -139,8 +170,6 @@
         });
     </script>
     @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
-

@@ -1,0 +1,312 @@
+﻿@model MyGymSystem.Models.Aboutuspage
+
+@{
+    ViewData["Title"] = "Edit About Us";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    string ImgOrDefault(string? path)
+    {
+        return Url.Content(!string.IsNullOrWhiteSpace(path) ? $"~/Images/{path}" : "~/Images/default.jpg");
+    }
+}
+
+<section class="py-4">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">About Us Page Content</h2>
+                <p class="text-muted mb-0">Edit the page intro, mission/vision, values, and image. All fields are optional.</p>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a asp-controller="Admins" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <button type="submit" form="aboutForm" class="btn btn-primary">
+                    <i class="bi bi-check2-circle"></i> Save Changes
+                </button>
+            </div>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <div>@TempData["Success"]</div>
+            </div>
+        }
+
+        <div class="row g-4">
+
+            <!-- LEFT: FORM -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+
+                        <form id="aboutForm" asp-action="EditAbout" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                            <!-- key -->
+                            <input type="hidden" asp-for="Aboutuspageid" />
+
+                            <!-- =========================
+                                 PAGE HEADER
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-window me-2 text-primary"></i>Header & Intro
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="PageTitle" class="form-label">Page Title</label>
+                                <input asp-for="PageTitle" class="form-control" placeholder="Example: About Our Fitness Center" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="IntroText" class="form-label">Intro Text</label>
+                                <textarea asp-for="IntroText" class="form-control" rows="3"
+                                          placeholder="Short introduction about your gym/system..."></textarea>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- =========================
+                                 MISSION / VISION
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-bullseye me-2 text-success"></i>Mission & Vision
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Missionstatement" class="form-label">Mission Statement</label>
+                                <textarea asp-for="Missionstatement" class="form-control" rows="2"
+                                          placeholder="What is your mission?"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Visionstatement" class="form-label">Vision Statement</label>
+                                <textarea asp-for="Visionstatement" class="form-control" rows="2"
+                                          placeholder="What is your vision?"></textarea>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- =========================
+                                 TEAM / DESCRIPTION
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-people me-2 text-warning"></i>Team / Description
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Teamdescription" class="form-label">Team Description</label>
+                                <textarea asp-for="Teamdescription" class="form-control" rows="3"
+                                          placeholder="Short paragraph about your trainers/team..."></textarea>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- =========================
+                                 VALUES (3 blocks)
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-award me-2 text-danger"></i>Values (3 Blocks)
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <!-- Value 1 -->
+                            <div class="border rounded p-3 mb-3">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="fw-semibold"><i class="bi bi-1-circle me-2"></i>Value 1</span>
+                                </div>
+                                <div class="mb-2">
+                                    <label asp-for="Value1Title" class="form-label">Title</label>
+                                    <input asp-for="Value1Title" class="form-control" placeholder="Example: Discipline" />
+                                </div>
+                                <div>
+                                    <label asp-for="Value1Text" class="form-label">Text</label>
+                                    <textarea asp-for="Value1Text" class="form-control" rows="2"
+                                              placeholder="Short explanation..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Value 2 -->
+                            <div class="border rounded p-3 mb-3">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="fw-semibold"><i class="bi bi-2-circle me-2"></i>Value 2</span>
+                                </div>
+                                <div class="mb-2">
+                                    <label asp-for="Value2Title" class="form-label">Title</label>
+                                    <input asp-for="Value2Title" class="form-control" placeholder="Example: Consistency" />
+                                </div>
+                                <div>
+                                    <label asp-for="Value2Text" class="form-label">Text</label>
+                                    <textarea asp-for="Value2Text" class="form-control" rows="2"
+                                              placeholder="Short explanation..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Value 3 -->
+                            <div class="border rounded p-3 mb-3">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="fw-semibold"><i class="bi bi-3-circle me-2"></i>Value 3</span>
+                                </div>
+                                <div class="mb-2">
+                                    <label asp-for="Value3Title" class="form-label">Title</label>
+                                    <input asp-for="Value3Title" class="form-control" placeholder="Example: Results" />
+                                </div>
+                                <div>
+                                    <label asp-for="Value3Text" class="form-label">Text</label>
+                                    <textarea asp-for="Value3Text" class="form-control" rows="2"
+                                              placeholder="Short explanation..."></textarea>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- =========================
+                                 IMAGE
+                                 ========================= -->
+                            <div class="mb-3 d-flex align-items-center justify-content-between">
+                                <h5 class="fw-semibold mb-0">
+                                    <i class="bi bi-image me-2 text-info"></i>Page Image
+                                </h5>
+                                <span class="badge bg-light text-muted border">Optional</span>
+                            </div>
+
+                            <div class="alert alert-info small mb-3">
+                                <i class="bi bi-info-circle me-1"></i>
+                                If you don’t upload a new image, the previous one will stay.
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Upload New Image</label>
+                                <input asp-for="ImageFiler" type="file" class="form-control" accept="image/*" />
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    @if (Model.Lastupdated != null)
+                                    {
+                                        <span><i class="bi bi-clock me-1"></i>Last updated: @Model.Lastupdated</span>
+                                    }
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check2-circle"></i> Save
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: PREVIEW -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h5 class="fw-semibold mb-3">
+                            <i class="bi bi-eye me-2 text-primary"></i>Preview
+                        </h5>
+
+                        <div class="border rounded overflow-hidden mb-3">
+                            <img src="@ImgOrDefault(Model.Imagepath)" style="width:100%; height:220px; object-fit:cover;" />
+                        </div>
+
+                        <div class="p-3 rounded border bg-light">
+                            <h4 class="fw-bold mb-2">@(!string.IsNullOrWhiteSpace(Model.PageTitle) ? Model.PageTitle : "About Us")</h4>
+
+                            <p class="text-muted mb-3">
+                                @(!string.IsNullOrWhiteSpace(Model.IntroText) ? Model.IntroText : "Your intro text will appear here.")
+                            </p>
+
+                            <div class="mb-3">
+                                <div class="fw-semibold">Mission</div>
+                                <div class="text-muted small">
+                                    @(!string.IsNullOrWhiteSpace(Model.Missionstatement) ? Model.Missionstatement : "Your mission statement will appear here.")
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="fw-semibold">Vision</div>
+                                <div class="text-muted small">
+                                    @(!string.IsNullOrWhiteSpace(Model.Visionstatement) ? Model.Visionstatement : "Your vision statement will appear here.")
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="fw-semibold">Team</div>
+                                <div class="text-muted small">
+                                    @(!string.IsNullOrWhiteSpace(Model.Teamdescription) ? Model.Teamdescription : "Your team description will appear here.")
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <div class="fw-semibold mb-2">Values</div>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="fw-semibold small">@(!string.IsNullOrWhiteSpace(Model.Value1Title) ? Model.Value1Title : "Value 1")</div>
+                                        <div class="text-muted small">@(!string.IsNullOrWhiteSpace(Model.Value1Text) ? Model.Value1Text : "Short text...")</div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="fw-semibold small">@(!string.IsNullOrWhiteSpace(Model.Value2Title) ? Model.Value2Title : "Value 2")</div>
+                                        <div class="text-muted small">@(!string.IsNullOrWhiteSpace(Model.Value2Text) ? Model.Value2Text : "Short text...")</div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="fw-semibold small">@(!string.IsNullOrWhiteSpace(Model.Value3Title) ? Model.Value3Title : "Value 3")</div>
+                                        <div class="text-muted small">@(!string.IsNullOrWhiteSpace(Model.Value3Text) ? Model.Value3Text : "Short text...")</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="mt-3 small text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            This is only a preview. Your public About page design can still look different.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-semibold mb-2"><i class="bi bi-lightbulb me-2 text-warning"></i>Tips</h6>
+                        <ul class="small text-muted mb-0">
+                            <li>Keep intro text 2–4 lines for best look.</li>
+                            <li>Values titles should be 1–2 words.</li>
+                            <li>Use a wide image for clean layout (landscape).</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

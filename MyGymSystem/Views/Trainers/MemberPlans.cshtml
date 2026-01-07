@@ -1,0 +1,137 @@
+﻿@model IEnumerable<MyGymSystem.Models.Workoutplan>
+
+@{
+    Layout = "~/Views/Shared/_TrainerLayout.cshtml";
+    var memberId = (long)ViewBag.MemberId;
+}
+
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+        <h2 class="mb-1">Workout Plans</h2>
+        <p class="text-muted mb-0">Manage workout plans for this member.</p>
+    </div>
+
+    <a class="btn td-btn-primary text-white"
+       asp-action="CreateWorkoutPlan"
+       asp-route-memberId="@memberId">
+        <i class="bi bi-plus-circle"></i> Create Plan
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+        <div class="td-card p-4">
+            <h5 class="mb-2">No plans yet</h5>
+            <p class="text-muted mb-3">Create the first workout plan for this member.</p>
+
+            <a class="btn td-btn-primary text-white"
+               asp-action="CreateWorkoutPlan"
+               asp-route-memberId="@memberId">
+                <i class="bi bi-plus-circle"></i> Create Plan
+            </a>
+
+            <a asp-action="MyMembers" class="btn td-btn-outline ms-2">
+                Back
+            </a>
+        </div>
+}
+else
+{
+        <div class="row g-3">
+        @foreach (var p in Model)
+        {
+                    <div class="col-12">
+                        <div class="td-card p-3 p-md-4">
+                            <div class="d-flex justify-content-between align-items-start gap-3">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <h5 class="mb-0 fw-bold">@p.Planname</h5>
+
+                                @* Optional: show date range badge *@
+                                @if (p.Startdate != null || p.Enddate != null)
+                                {
+                                                <span class="badge text-bg-light border">
+                                        @(p.Startdate?.ToString("yyyy-MM-dd") ?? "—")
+                                                    →
+                                        @(p.Enddate?.ToString("yyyy-MM-dd") ?? "—")
+                                                </span>
+                                }
+                                    </div>
+
+                            @if (!string.IsNullOrWhiteSpace(p.Plandescription))
+                            {
+                                            <p class="text-muted mb-2">@p.Plandescription</p>
+                            }
+
+                                    <div class="row g-2">
+                                        <div class="col-12 col-md-4">
+                                            <div class="small text-muted">Goal</div>
+                                            <div class="fw-semibold">@(!string.IsNullOrWhiteSpace(p.Goal) ? p.Goal : "—")</div>
+                                        </div>
+
+                                        <div class="col-12 col-md-4">
+                                            <div class="small text-muted">Schedule</div>
+                                            <div class="fw-semibold">@(!string.IsNullOrWhiteSpace(p.Schedule) ? p.Schedule : "—")</div>
+                                        </div>
+
+                                        <div class="col-12 col-md-4">
+                                            <div class="small text-muted">Dates</div>
+                                            <div class="fw-semibold">
+                                        @(p.Startdate?.ToString("yyyy-MM-dd") ?? "—")
+                                                -
+                                        @(p.Enddate?.ToString("yyyy-MM-dd") ?? "—")
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            @if (!string.IsNullOrWhiteSpace(p.Routinedetails))
+                            {
+                                            <div class="mt-3">
+                                                <div class="small text-muted mb-1">Routine Details</div>
+                                                <div class="td-routine-box">
+                                        @p.Routinedetails
+                                                </div>
+                                            </div>
+                            }
+                                </div>
+
+                                <div class="d-flex flex-column gap-2">
+                                    <a class="btn btn-sm btn-outline-primary"
+                                       asp-action="EditWorkoutPlan"
+                                       asp-route-id="@p.Workoutplanid"
+                                       asp-route-memberId="@memberId">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+
+                                    <a class="btn btn-sm btn-outline-danger"
+                                       asp-action="DeleteWorkoutPlan"
+                                       asp-route-id="@p.Workoutplanid"
+                                       asp-route-memberId="@memberId">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        }
+        </div>
+
+        <div class="mt-3">
+            <a asp-action="MyMembers" class="btn td-btn-outline">
+                <i class="bi bi-arrow-left"></i> Back to Members
+            </a>
+        </div>
+}
+
+<style>
+    /* Small local styling for routine preview */
+    .td-routine-box {
+        background: rgba(108, 74, 182, 0.06);
+        border: 1px solid rgba(108, 74, 182, 0.15);
+        border-radius: 14px;
+        padding: 12px;
+        white-space: pre-wrap;
+        max-height: 140px;
+        overflow: auto;
+    }
+</style>

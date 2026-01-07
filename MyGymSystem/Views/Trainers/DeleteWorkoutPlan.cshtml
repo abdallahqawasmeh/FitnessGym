@@ -1,0 +1,38 @@
+﻿@model MyGymSystem.Models.Workoutplan
+
+@{
+    Layout = "~/Views/Shared/_TrainerLayout.cshtml";
+}
+
+<h2>Delete Workout Plan</h2>
+
+<div class="alert alert-warning">
+    Are you sure you want to delete this workout plan?
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Plan Name</dt>
+    <dd class="col-sm-9">@Model.Planname</dd>
+
+    <dt class="col-sm-3">Member Id</dt>
+    <dd class="col-sm-9">@Model.Memberid</dd>
+
+    <dt class="col-sm-3">Start</dt>
+    <dd class="col-sm-9">@Model.Startdate</dd>
+
+    <dt class="col-sm-3">End</dt>
+    <dd class="col-sm-9">@Model.Enddate</dd>
+</dl>
+
+<form asp-action="DeleteWorkoutPlan" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Workoutplanid" />
+
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="MemberPlans"
+       asp-route-memberId="@Model.Memberid"
+       class="btn btn-outline-secondary ms-2">
+        Cancel
+    </a>
+
+</form>

@@ -1,6 +1,10 @@
-﻿@model IEnumerable<Trainer>
+﻿@model MyGymSystem.Join.TrainersVM
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // ✅ CMS row (id=1) + list of trainers
+    var page = Model?.Page;
 }
 
 <link rel="stylesheet" href="~/css/TrainerCards/Card.css">
@@ -8,12 +12,16 @@
 <section class="team-boxed" style="min-height:100vh; display:flex; align-items:center;">
     <div class="container">
         <div class="intro">
-            <h2 class="text-center">Our Experienced Trainers</h2>
-            <p class="text-center">Who are in extremely love with eco-friendly systems.</p>
+            <h2 class="text-center">
+                @(!string.IsNullOrWhiteSpace(page?.PageTitle) ? page!.PageTitle : "Our Experienced Trainers")
+            </h2>
+            <p class="text-center">
+                @(!string.IsNullOrWhiteSpace(page?.IntroText) ? page!.IntroText : "Who are in extremely love with eco-friendly systems.")
+            </p>
         </div>
 
         <div class="row people">
-            @foreach (var item in Model)
+            @foreach (var item in Model.Trainers)
             {
                 <div class="col-md-6 col-lg-4 item">
                     <div class="box">
@@ -28,7 +36,7 @@
                         <!-- Trainer Specialization -->
                         <p class="title">@item.Specialization</p>
 
-                        <!-- Social Icons -->
+                        <!-- Social Icons (KEEP AS-IS) -->
                         <div class="social">
                             <a href="#"><i class="fa fa-facebook-official"></i></a>
                             <a href="#"><i class="fa fa-twitter"></i></a>
