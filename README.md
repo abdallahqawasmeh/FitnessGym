@@ -53,4 +53,4 @@ A full-stack web application built with **ASP.NET Core MVC** and **Entity Framew
 1. Clone the repository:
    ```bash
    git clone https://github.com/<abdallahqawasmeh>/<FitnessGym>.git
-   cd <repo-name>
+   cd <FitnessGym>
