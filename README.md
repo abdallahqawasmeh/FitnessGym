@@ -52,5 +52,15 @@ A full-stack web application built with **ASP.NET Core MVC** and **Entity Framew
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/<abdallahqawasmeh>/<FitnessGym>.git
-   cd <FitnessGym>
+   git clone https://github.com/abdallahqawasmeh/FitnessGym.git
+   cd FitnessGym
+
+### Configure Database
+Update the connection string in `MyGymSystem/appsettings.json`.
+
+### Create Database (EF Core)
+dotnet ef database update --project MyGymSystem
+
+### Run
+dotnet run --project MyGymSystem
+
