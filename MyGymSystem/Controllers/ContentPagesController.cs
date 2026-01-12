@@ -27,7 +27,19 @@ namespace MyGymSystem.Controllers
         // ✅ If you already have your own FillLayoutData(), replace this call with yours
         private void FillLayoutData()
         {
-            // optional: ViewData["name"] = HttpContext.Session.GetString("AName");
+            ViewData["name"] = HttpContext.Session.GetString("AdminName");
+            ViewData["ad"] = HttpContext.Session.GetInt32("AdminId");
+
+            var AdminId = HttpContext.Session.GetInt32("AdminId");
+            if (AdminId != null)
+            {
+                var admin = _context.Admins.FirstOrDefault(m => m.Adminid == AdminId);
+                if (admin != null)
+                {
+                    ViewData["AdminImage"] = admin.Imagepath;
+                }
+            }
+
         }
 
         // =========================

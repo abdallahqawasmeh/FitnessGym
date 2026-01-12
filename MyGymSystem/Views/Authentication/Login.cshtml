@@ -1,12 +1,4 @@
-﻿
-
-
-
-
-
-
-
-@model MyGymSystem.Models.Userlogin
+﻿@model MyGymSystem.Models.ViewModels.LoginVM
 @{
     ViewData["Title"] = "Login";
     Layout = null;
@@ -55,24 +47,25 @@
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Passwordhash" class="form-label text-white-50 small">Password</label>
+                        <label asp-for="Password" class="form-label text-white-50 small">Password</label>
                         <div class="input-group">
                             <span class="input-group-text bg-transparent text-white border-secondary">
                                 <i class="bi bi-lock"></i>
                             </span>
-                            <input asp-for="Passwordhash" id="passwordInput" type="password"
+                            <input asp-for="Password" id="passwordInput" type="password"
                                    class="form-control bg-transparent text-white border-secondary"
                                    placeholder="Enter your password" />
                             <button type="button" class="btn btn-outline-secondary" id="togglePassword">
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
-                        <span asp-validation-for="Passwordhash" class="text-danger small"></span>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
+
 
                     <div class="d-grid gap-2 d-md-flex mt-4">
                         <button type="submit" class="btn btn-info fw-bold flex-fill">Login</button>
-                        <button type="button" class="btn btn-outline-light fw-bold flex-fill" onclick="go()">Sign Up</button>
+                        <button type="button"  class="btn btn-outline-light fw-bold flex-fill" onclick="go()">Sign Up</button>
                     </div>
                 </form>
             </div>
@@ -108,7 +101,18 @@
         });
     </script>
 
-    @* <partial name="_ValidationScriptsPartial" /> *@
+    <partial name="_ValidationScriptsPartial" /> 
+    <script>
+        $(function () {
+            const form = $("form");
+            $.validator.unobtrusive.parse(form);
+
+            form.find("input").on("keyup change blur", function () {
+                $(this).valid();
+            });
+        });
+    </script>
+
 </body>
 </html>
 

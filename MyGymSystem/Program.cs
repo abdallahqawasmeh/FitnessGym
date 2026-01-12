@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyGymSystem.Context;
 
@@ -12,6 +13,8 @@ builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromMinutes(60);
 
 });
+builder.Services.AddScoped<PasswordHasher<MyGymSystem.Models.Userlogin>>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

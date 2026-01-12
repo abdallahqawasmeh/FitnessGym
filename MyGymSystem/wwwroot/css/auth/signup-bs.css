@@ -1,0 +1,14 @@
+﻿.signup-bg {
+    background: linear-gradient(120deg, rgba(11,15,20,0.25), rgba(11,15,20,0.85)), url('/images/photo-1648235692910-947cb90ddd97.jfif') center / cover no-repeat;
+    min-height: 260px;
+}
+
+
+.signup-file::file-selector-button {
+    border: 1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.08);
+    color: #fff;
+    border-radius: 12px;
+    padding: .5rem .9rem;
+    margin-right: .75rem;
+}
